@@ -11,6 +11,11 @@ public class UserServiceIpl implements UserService{
     }
     @Override
     public User register(Usrr user){
-        return 
+        return UserRepository.save(user);
+    }
+    @Override
+    public User findByEmail(String email){
+        return
+        userRepository.findByEmail(email);
     }
 }
