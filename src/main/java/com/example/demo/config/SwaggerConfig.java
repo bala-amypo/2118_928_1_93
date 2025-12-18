@@ -1,4 +1,4 @@
-package com.example.demo.swaggerconfig;
+package com.example.demo.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -9,11 +9,11 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI openAPI() {
+    public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
                         .title("Demo API")
-                        .description("Spring Boot CRUD API")
-                        .version("1.0"));
+                        .version("1.0")
+                        .description("Spring Boot CRUD APIs"));
     }
 }
