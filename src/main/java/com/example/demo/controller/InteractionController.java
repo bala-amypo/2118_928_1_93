@@ -1,0 +1,28 @@
+package com.example.demo.controller;
+
+import com.example.demo.entity.InteractionCheckResult;
+import com.example.demo.service.InteractionService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/interact")
+public class InteractionController {
+
+    private final InteractionService interactionService;
+
+    public InteractionController(InteractionService interactionService) {
+        this.interactionService = interactionService;
+    }
+
+    @PostMapping("/check")
+    public InteractionCheckResult check(@RequestBody List<Long> ids) {
+        return interactionService.checkInteractions(ids);
+    }
+
+    @GetMapping("/result/{id}")
+    public InteractionCheckResult getResult(@PathVariable Long id) {
+        return interactionService.getResult(id);
+    }
+}
