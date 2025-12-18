@@ -9,10 +9,7 @@ public class ActiveIngredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
     private String name;
-
-    public ActiveIngredient() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
