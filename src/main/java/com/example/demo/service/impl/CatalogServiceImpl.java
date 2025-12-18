@@ -1,28 +1,38 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.InteractionRule;
-import com.example.demo.repo.InteractionRuleRepository;
-import com.example.demo.service.RuleService;
+import com.example.demo.entity.ActiveIngredient;
+import com.example.demo.entity.Medication;
+import com.example.demo.repo.ActiveIngredientRepository;
+import com.example.demo.repo.MedicationRepository;
+import com.example.demo.service.CatalogService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class RuleServiceImpl implements RuleService {
+public class CatalogServiceImpl implements CatalogService {
 
-    private final InteractionRuleRepository ruleRepository;
+    private final ActiveIngredientRepository ingredientRepo;
+    private final MedicationRepository medicationRepo;
 
-    public RuleServiceImpl(InteractionRuleRepository ruleRepository) {
-        this.ruleRepository = ruleRepository;
+    public CatalogServiceImpl(ActiveIngredientRepository ingredientRepo,
+                              MedicationRepository medicationRepo) {
+        this.ingredientRepo = ingredientRepo;
+        this.medicationRepo = medicationRepo;
     }
 
     @Override
-    public InteractionRule addRule(InteractionRule rule) {
-        return ruleRepository.save(rule);
+    public ActiveIngredient addIngredient(ActiveIngredient ingredient) {
+        return ingredientRepo.save(ingredient);
     }
 
     @Override
-    public List<InteractionRule> getAllRules() {
-        return ruleRepository.findAll();
+    public Medication addMedication(Medication medication) {
+        return medicationRepo.save(medication);
+    }
+
+    @Override
+    public List<Medication> getAllMedications() {
+        return medicationRepo.findAll();
     }
 }
