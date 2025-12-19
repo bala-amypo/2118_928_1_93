@@ -24,8 +24,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**")
-                .permitAll()
+                // Allow login, swagger, and rules endpoints without authentication
+                .requestMatchers(
+                    "/auth/**", 
+                    "/swagger-ui/**", 
+                    "/v3/api-docs/**",
+                    "/rules/**"       // ✅ Fixed: rules endpoints accessible
+                ).permitAll()
                 .anyRequest().authenticated()
             );
 
@@ -38,13 +43,13 @@ public class SecurityConfig {
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPasswordEncoder(passwordEncoder()); // BCrypt
         return authProvider;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // 🔑 matches hashed password
+        return new BCryptPasswordEncoder(); // 🔑 Password check works
     }
 
     @Bean
