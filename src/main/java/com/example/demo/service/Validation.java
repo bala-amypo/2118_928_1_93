@@ -1,36 +1,35 @@
 package com.example.demo.service;
 
 import com.example.demo.exception.BadRequestException;
-import com.example.demo.entity.Rule;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Validation {
 
-    public void ValidateRule(Rule rule) {
+    public void validateRule(
+            Long ingredientAId,
+            Long ingredientBId,
+            String severity,
+            String description
+    ) {
 
-        if (rule == null) {
-            throw new BadRequestException("Rule object cannot be null");
+        if (ingredientAId == null) {
+            throw new BadRequestException("IngredientA id is required");
         }
 
-        if (rule.getIngredientA() == null) {
-            throw new BadRequestException("IngredientA is required");
+        if (ingredientBId == null) {
+            throw new BadRequestException("IngredientB id is required");
         }
 
-        if (rule.getIngredientB() == null) {
-            throw new BadRequestException("IngredientB is required");
-        }
-
-        if (rule.getIngredientA().getId()
-                .equals(rule.getIngredientB().getId())) {
+        if (ingredientAId.equals(ingredientBId)) {
             throw new BadRequestException("IngredientA and IngredientB cannot be same");
         }
 
-        if (rule.getSeverity() == null || rule.getSeverity().isBlank()) {
+        if (severity == null || severity.trim().isEmpty()) {
             throw new BadRequestException("Severity is required");
         }
 
-        if (rule.getDescription() == null || rule.getDescription().isBlank()) {
+        if (description == null || description.trim().isEmpty()) {
             throw new BadRequestException("Description is required");
         }
     }
