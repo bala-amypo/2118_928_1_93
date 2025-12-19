@@ -5,6 +5,7 @@ import com.example.demo.service.CatalogService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+@CrossOrigin(origins= "*")
 @RestController
 @RequestMapping("/catalog")
 public class CatalogController {

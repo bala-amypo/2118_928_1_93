@@ -5,6 +5,7 @@ import com.example.demo.service.RuleService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+@CrossOrigin(origins= "*")
 @RestController
 @RequestMapping("/rules")
 public class RuleController {
