@@ -11,8 +11,13 @@ public class User {
     private Long id;
 
     private String name;
+
+    @Column(unique = true)
     private String email;
-    private String role;
+
+    private String password;
+
+    // ===== getters & setters =====
 
     public Long getId() {
         return id;
@@ -38,11 +43,11 @@ public class User {
         this.email = email;
     }
 
-    public String getRole() {
-        return role;
+    public String getPassword() {
+        return password;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
