@@ -1,32 +1,36 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entity.InteractionRule;
 import com.example.demo.service.RuleService;
 import com.example.demo.service.Validation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RuleServiceImpl implements RuleService {
 
-    @Autowired
-    private Validation validation;
+    private final Validation validation;
+
+    // temporary in-memory storage
+    private final List<InteractionRule> rules = new ArrayList<>();
+
+    public RuleServiceImpl(Validation validation) {
+        this.validation = validation;
+    }
 
     @Override
-    public void createRule(
-            Long ingredientAId,
-            Long ingredientBId,
-            String severity,
-            String description
-    ) {
+    public InteractionRule addRule(InteractionRule rule) {
 
-        validation.validateRule(
-                ingredientAId,
-                ingredientBId,
-                severity,
-                description
-        );
+        validation.validateRule(rule);
 
-        // DB save logic later
-        System.out.println("Rule validated successfully");
+        rules.add(rule);
+        return rule;
+    }
+
+    @Override
+    public List<InteractionRule> getAllRules() {
+        return rules;
     }
 }
