@@ -26,6 +26,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**")
@@ -33,15 +34,17 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             );
 
+        // 🔑 Wire AuthenticationProvider with UserDetailsService + PasswordEncoder
         http.authenticationProvider(authenticationProvider());
 
+        // Add JWT filter
         http.addFilterBefore(jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // 🔑 Add this: DaoAuthenticationProvider wired with UserDetailsService & PasswordEncoder
+    // 🔑 DaoAuthenticationProvider setup
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -50,11 +53,13 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    // 🔑 BCrypt password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // 🔑 AuthenticationManager bean
     @Bean
     public AuthenticationManager authManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
