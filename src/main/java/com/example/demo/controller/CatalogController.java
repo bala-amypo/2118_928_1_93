@@ -1,20 +1,15 @@
+package com.example.demo.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 @RestController
-@RequestMapping("/ingredient")
+@RequestMapping("/catalog")
 public class CatalogController {
 
-    private final IngredientService service;
-
-    public CatalogController(IngredientService service) {
-        this.service = service;
-    }
-
-    @PostMapping
-    public ActiveIngredient add(@RequestBody ActiveIngredient ingredient) {
-        return service.addIngredient(ingredient);
-    }
-
-    @GetMapping
-    public List<ActiveIngredient> getAll() {
-        return service.getAllIngredients();
+    @GetMapping("/test")
+    public String test() {
+        return "Swagger Working";
     }
 }
