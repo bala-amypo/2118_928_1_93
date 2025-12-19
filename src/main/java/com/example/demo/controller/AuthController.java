@@ -6,14 +6,11 @@ import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import com.example.demo.util.JwtUtil;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
@@ -38,29 +35,29 @@ public class AuthController {
     // 🔹 REGISTER USER
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest req) {
+
         User user = new User();
         user.setName(req.getName());
         user.setEmail(req.getEmail());
-        user.setPassword(passwordEncoder.encode(req.getPassword())); // hash password
-        user.setRole("USER"); // default role
-        User saved = userService.register(user);
-        return ResponseEntity.ok(saved);
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setRole("USER");
+
+        return ResponseEntity.ok(userService.register(user));
     }
 
-    // 🔹 LOGIN USER
+    // 🔹 LOGIN USER (FIXED)
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest req) {
-        try {
-            authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    req.getEmail(), req.getPassword()
-                )
-            );
-            String token = jwtUtil.generateToken(req.getEmail());
-            return ResponseEntity.ok(new AuthResponse(token));
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Invalid email or password"));
-        }
+    public ResponseEntity<AuthResponse> login(
+            @RequestBody LoginRequest request) {
+
+        authManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                request.getEmail(),
+                request.getPassword()
+            )
+        );
+
+        String token = jwtUtil.generateToken(request.getEmail());
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }
