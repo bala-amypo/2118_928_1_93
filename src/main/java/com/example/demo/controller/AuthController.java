@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.*;
+import com.example.demo.dto.AuthResponse;
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import com.example.demo.util.JwtUtil;
@@ -33,6 +35,7 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // 🔹 REGISTER USER
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest req) {
         User user = new User();
@@ -44,6 +47,7 @@ public class AuthController {
         return ResponseEntity.ok(saved);
     }
 
+    // 🔹 LOGIN USER
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {
         try {

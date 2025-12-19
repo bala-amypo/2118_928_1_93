@@ -34,32 +34,28 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             );
 
-        // 🔑 Wire AuthenticationProvider with UserDetailsService + PasswordEncoder
         http.authenticationProvider(authenticationProvider());
 
-        // Add JWT filter
         http.addFilterBefore(jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // 🔑 DaoAuthenticationProvider setup
+    // DaoAuthenticationProvider wired with UserDetailsService + PasswordEncoder
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setUserDetailsService(userDetailsService);  // 🔑 custom service
+        authProvider.setPasswordEncoder(passwordEncoder());      // 🔑 BCrypt encoder
         return authProvider;
     }
 
-    // 🔑 BCrypt password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 🔑 AuthenticationManager bean
     @Bean
     public AuthenticationManager authManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
