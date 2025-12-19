@@ -1,49 +1,9 @@
-package com.example.demo.exception;
+import org.springframework.dao.DataIntegrityViolationException;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+@ExceptionHandler(DataIntegrityViolationException.class)
+public ResponseEntity<ApiErrorResponse> handleDataIntegrity(
+        DataIntegrityViolationException ex) {
 
-@RestControllerAdvice
-public class GlobalExceptionHandler {
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ApiErrorResponse> handleBadRequest(
-            BadRequestException ex) {
-
-        ApiErrorResponse error =
-                new ApiErrorResponse(
-                        HttpStatus.BAD_REQUEST.value(),
-                        ex.getMessage()
-                );
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleResourceNotFound(
-            ResourceNotFoundException ex) {
-
-        ApiErrorResponse error =
-                new ApiErrorResponse(
-                        HttpStatus.NOT_FOUND.value(),
-                        ex.getMessage()
-                );
-
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> handleGeneralException(
-            Exception ex) {
-
-        ApiErrorResponse error =
-                new ApiErrorResponse(
-                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                        "Internal Server Error"
-                );
-
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new ApiErrorResponse(400, "Email already exists"));
 }
