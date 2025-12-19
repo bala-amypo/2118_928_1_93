@@ -2,19 +2,21 @@ package com.example.demo.security;
 
 import com.example.demo.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+
 import java.util.Collection;
 import java.util.Collections;
 
-public class CustomUserDetails implements UserDetails {
+public class CustomerUserDetails implements UserDetails {
 
     private final User user;
 
-    public CustomUserDetails(User user) {
+    public CustomerUserDetails(User user) {
         this.user = user;
     }
 
     @Override
-    public Collection<?> getAuthorities() {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();
     }
 

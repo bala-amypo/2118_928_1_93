@@ -10,14 +10,13 @@ import java.util.Date;
 public class JwtUtil {
 
     private final String SECRET = "secretkey123";
-    private final long EXPIRATION = 1000 * 60 * 60;
+    private final long EXP = 1000 * 60 * 60;
 
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(
-                        new Date(System.currentTimeMillis() + EXPIRATION))
+                .setExpiration(new Date(System.currentTimeMillis() + EXP))
                 .signWith(SignatureAlgorithm.HS256, SECRET)
                 .compact();
     }
