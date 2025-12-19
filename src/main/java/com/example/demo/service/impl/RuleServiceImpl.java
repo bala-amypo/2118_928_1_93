@@ -1,25 +1,39 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.InteractionRule;
-import com.example.demo.repository.InteractionRuleRepository;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.service.RuleService;
+import com.example.demo.service.Validation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 public class RuleServiceImpl implements RuleService {
 
-    private final InteractionRuleRepository repository;
+    @Autowired
+    private Validation validation;
 
-    public RuleServiceImpl(InteractionRuleRepository repository) {
-        this.repository = repository;
-    }
+    @Override
+    public void createRule(
+            Long ingredientAId,
+            Long ingredientBId,
+            String severity,
+            String description
+    ) {
 
-    public InteractionRule addRule(InteractionRule rule) {
-        return repository.save(rule);
-    }
+        // 🔒 validation
+        validation.validateRule(
+                ingredientAId,
+                ingredientBId,
+                severity,
+                description
+        );
 
-    public List<InteractionRule> getAllRules() {
-        return repository.findAll();
+        // 👉 temporary logic (since no entity/repo in your structure)
+        // later you can add DB save here
+
+        if ("high".equalsIgnoreCase(severity)) {
+            // example business rule
+            System.out.println("High severity rule created");
+        }
     }
 }

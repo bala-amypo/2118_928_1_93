@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Validation {
 
-    public void validateRule(Rule rule) {
+    public void ValidateRule(Rule rule) {
 
         if (rule == null) {
             throw new BadRequestException("Rule object cannot be null");
