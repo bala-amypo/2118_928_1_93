@@ -9,7 +9,6 @@ import com.example.demo.util.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin("*")
@@ -20,32 +19,29 @@ public class AuthController {
     private final UserService userService;
     private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
-    private final PasswordEncoder passwordEncoder;
 
     public AuthController(UserService userService,
                           AuthenticationManager authManager,
-                          JwtUtil jwtUtil,
-                          PasswordEncoder passwordEncoder) {
+                          JwtUtil jwtUtil) {
         this.userService = userService;
         this.authManager = authManager;
         this.jwtUtil = jwtUtil;
-        this.passwordEncoder = passwordEncoder;
     }
 
-    // 🔹 REGISTER USER
+    // 🔹 REGISTER (FIXED — NO PASSWORD ENCODE HERE)
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest req) {
 
         User user = new User();
         user.setName(req.getName());
         user.setEmail(req.getEmail());
-        user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setPassword(req.getPassword()); // ❗ plain password
         user.setRole("USER");
 
         return ResponseEntity.ok(userService.register(user));
     }
 
-    // 🔹 LOGIN USER (FIXED)
+    // 🔹 LOGIN (CORRECT)
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
             @RequestBody LoginRequest request) {
