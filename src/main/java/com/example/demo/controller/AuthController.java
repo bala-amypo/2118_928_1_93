@@ -1,34 +1,31 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.ActiveIngredient;
-import com.example.demo.entity.Medication;
-import com.example.demo.service.CatalogService;
+import com.example.demo.entity.User;
+import com.example.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/catalog")
-public class CatalogController {
+@RequestMapping("/auth")
+public class AuthController {
 
-    private final CatalogService catalogService;
+    private final UserService userService;
 
-    public CatalogController(CatalogService catalogService) {
-        this.catalogService = catalogService;
+    public AuthController(UserService userService) {
+        this.userService = userService;
     }
 
-    @PostMapping("/ingredient")
-    public ActiveIngredient addIngredient(@RequestBody ActiveIngredient ingredient) {
-        return catalogService.addIngredient(ingredient);
+    @PostMapping("/register")
+    public User register(@RequestBody User user) {
+        return userService.register(user);
     }
 
-    @PostMapping("/medication")
-    public Medication addMedication(@RequestBody Medication medication) {
-        return catalogService.addMedication(medication);
-    }
-
-    @GetMapping("/medications")
-    public List<Medication> getAllMedications() {
-        return catalogService.getAllMedications();
+    @PostMapping("/login")
+    public Map<String, String> login(@RequestBody Map<String, String> request) {
+        return userService.login(
+                request.get("email"),
+                request.get("password")
+        );
     }
 }
