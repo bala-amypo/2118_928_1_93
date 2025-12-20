@@ -5,6 +5,7 @@ import com.example.demo.entity.Medication;
 import com.example.demo.repository.ActiveIngredientRepository;
 import com.example.demo.repository.MedicationRepository;
 import com.example.demo.service.CatalogService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -28,15 +29,17 @@ public class CatalogServiceImpl implements CatalogService {
         return activeIngredientRepository.save(ingredient);
     }
 
+    @Transactional
     @Override
     public Medication addMedication(Medication medication) {
 
         Set<ActiveIngredient> managedIngredients = new HashSet<>();
 
         for (ActiveIngredient ing : medication.getIngredients()) {
-            managedIngredients.add(
-                activeIngredientRepository.findById(ing.getId()).orElseThrow()
-            );
+            ActiveIngredient dbIng =
+                    activeIngredientRepository.findById(ing.getId())
+                            .orElseThrow(() -> new RuntimeException("Ingredient not found"));
+            managedIngredients.add(dbIng);
         }
 
         medication.setIngredients(managedIngredients);
