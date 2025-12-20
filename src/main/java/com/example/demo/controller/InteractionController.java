@@ -1,10 +1,11 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.InteractionRequest;
 import com.example.demo.entity.InteractionCheckResult;
 import com.example.demo.service.InteractionService;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins= "*")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/interactions")
 public class InteractionController {
@@ -16,7 +17,9 @@ public class InteractionController {
     }
 
     @PostMapping
-    public InteractionCheckResult save(@RequestBody InteractionCheckResult result) {
-        return service.saveResult(result);
+    public InteractionCheckResult save(
+            @RequestBody InteractionRequest request) {
+
+        return service.checkInteractions(request.getMedications());
     }
 }
