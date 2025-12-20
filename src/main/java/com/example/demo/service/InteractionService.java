@@ -7,5 +7,5 @@ public interface InteractionService {
 
     InteractionCheckResult checkInteractions(List<Long> medicationIds);
 
-    InteractionCheckResult saveResult(InteractionCheckResult result);
+    InteractionCheckResult getResultById(Long id);
 }

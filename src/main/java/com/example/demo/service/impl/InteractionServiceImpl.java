@@ -20,7 +20,6 @@ public class InteractionServiceImpl implements InteractionService {
     @Override
     public InteractionCheckResult checkInteractions(List<Long> medicationIds) {
 
-        // TEMP logic (later real interaction rules)
         InteractionCheckResult result = new InteractionCheckResult();
         result.setMedications(medicationIds.toString());
         result.setInteractions("No interaction logic implemented yet");
@@ -30,8 +29,8 @@ public class InteractionServiceImpl implements InteractionService {
     }
 
     @Override
-    public InteractionCheckResult saveResult(InteractionCheckResult result) {
-        result.setCheckedAt(LocalDateTime.now());
-        return repository.save(result);
+    public InteractionCheckResult getResultById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Result not found"));
     }
 }
