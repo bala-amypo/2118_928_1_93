@@ -1,10 +1,3 @@
-package com.example.demo.service.impl;
-
-import com.example.demo.entity.InteractionCheckResult;
-import com.example.demo.repository.InteractionCheckResultRepository;
-import com.example.demo.service.InteractionService;
-import org.springframework.stereotype.Service;
-
 @Service
 public class InteractionServiceImpl implements InteractionService {
 
@@ -14,7 +7,11 @@ public class InteractionServiceImpl implements InteractionService {
         this.repository = repository;
     }
 
-    public InteractionCheckResult saveResult(InteractionCheckResult result) {
+    @Override
+    public InteractionCheckResult checkInteractions(List<Long> medicationIds) {
+        InteractionCheckResult result = new InteractionCheckResult();
+        result.setInteractions("NO_RULE_CHECK_YET");
+        result.setCheckedAt(java.time.LocalDateTime.now());
         return repository.save(result);
     }
 }
