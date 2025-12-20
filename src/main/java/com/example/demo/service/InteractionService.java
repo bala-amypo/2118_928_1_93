@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.InteractionCheckResult;
+import java.util.List;
 
 public interface InteractionService {
-    InteractionCheckResult saveResult(InteractionCheckResult result);
+
+    InteractionCheckResult checkInteractions(List<Long> medicationIds);
 }
