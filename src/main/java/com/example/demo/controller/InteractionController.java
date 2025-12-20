@@ -1,11 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.InteractionRequest;
 import com.example.demo.entity.InteractionCheckResult;
 import com.example.demo.service.InteractionService;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -19,7 +17,7 @@ public class InteractionController {
     }
 
     @PostMapping
-    public InteractionCheckResult check(@RequestBody Map<String, List<Long>> body) {
-        return service.checkInteractions(body.get("medications"));
+    public InteractionCheckResult check(@RequestBody InteractionRequest request) {
+        return service.checkInteractions(request.getMedications());
     }
 }
