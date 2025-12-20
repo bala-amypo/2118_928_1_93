@@ -4,56 +4,46 @@ import com.example.demo.dto.AuthResponse;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
-import com.example.demo.util.JwtUtil;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     private final UserService userService;
-    private final AuthenticationManager authManager;
-    private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
     public AuthController(UserService userService,
-                          AuthenticationManager authManager,
-                          JwtUtil jwtUtil) {
+                          UserRepository userRepository) {
         this.userService = userService;
-        this.authManager = authManager;
-        this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
     }
 
-    // 🔹 REGISTER (FIXED — NO PASSWORD ENCODE HERE)
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterRequest req) {
+    public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
 
         User user = new User();
-        user.setName(req.getName());
-        user.setEmail(req.getEmail());
-        user.setPassword(req.getPassword()); // ❗ plain password
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword()); // plain for now
         user.setRole("USER");
 
         return ResponseEntity.ok(userService.register(user));
     }
 
-    // 🔹 LOGIN (CORRECT)
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(
-            @RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
 
-        authManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                request.getEmail(),
-                request.getPassword()
-            )
-        );
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid email"));
 
-        String token = jwtUtil.generateToken(request.getEmail());
-        return ResponseEntity.ok(new AuthResponse(token));
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        return ResponseEntity.ok(new AuthResponse("LOGIN_SUCCESS"));
     }
 }
