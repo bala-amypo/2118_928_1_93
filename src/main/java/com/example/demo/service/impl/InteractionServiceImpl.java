@@ -34,3 +34,14 @@ public class InteractionServiceImpl implements InteractionService {
                 .orElseThrow(() -> new RuntimeException("Result not found"));
     }
 }
+USE drug_checker;
+SET FOREIGN_KEY_CHECKS = 0;
+
+TRUNCATE TABLE medication_ingredients;
+TRUNCATE TABLE interaction_check_result;
+TRUNCATE TABLE interaction_rule;
+TRUNCATE TABLE medication;
+TRUNCATE TABLE active_ingredient;
+TRUNCATE TABLE users;
+
+SET FOREIGN_KEY_CHECKS = 1;
