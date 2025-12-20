@@ -4,8 +4,6 @@ import com.example.demo.entity.InteractionRule;
 import java.util.List;
 
 public interface RuleService {
-
-    InteractionRule addRule(InteractionRule rule);
-
+    InteractionRule saveRule(InteractionRule rule);
     List<InteractionRule> getAllRules();
 }

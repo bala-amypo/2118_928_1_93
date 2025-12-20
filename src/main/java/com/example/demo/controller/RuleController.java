@@ -3,9 +3,9 @@ package com.example.demo.controller;
 import com.example.demo.entity.InteractionRule;
 import com.example.demo.service.RuleService;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
-@CrossOrigin(origins= "*")
 @RestController
 @RequestMapping("/rules")
 public class RuleController {
@@ -17,12 +17,12 @@ public class RuleController {
     }
 
     @PostMapping
-    public InteractionRule addRule(@RequestBody InteractionRule rule) {
-        return service.addRule(rule);
+    public InteractionRule create(@RequestBody InteractionRule rule) {
+        return service.saveRule(rule);
     }
 
     @GetMapping
-    public List<InteractionRule> getAllRules() {
+    public List<InteractionRule> getAll() {
         return service.getAllRules();
     }
 }

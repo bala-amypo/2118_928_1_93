@@ -1,6 +1,8 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entity.ActiveIngredient;
 import com.example.demo.entity.InteractionRule;
+import com.example.demo.repository.ActiveIngredientRepository;
 import com.example.demo.repository.InteractionRuleRepository;
 import com.example.demo.service.RuleService;
 import org.springframework.stereotype.Service;
@@ -11,14 +13,28 @@ import java.util.List;
 public class RuleServiceImpl implements RuleService {
 
     private final InteractionRuleRepository ruleRepository;
+    private final ActiveIngredientRepository ingredientRepository;
 
-    public RuleServiceImpl(InteractionRuleRepository ruleRepository) {
+    public RuleServiceImpl(InteractionRuleRepository ruleRepository,
+                           ActiveIngredientRepository ingredientRepository) {
         this.ruleRepository = ruleRepository;
+        this.ingredientRepository = ingredientRepository;
     }
 
     @Override
-    public InteractionRule addRule(InteractionRule rule) {
-        // ✅ DIRECT DB SAVE
+    public InteractionRule saveRule(InteractionRule rule) {
+
+        ActiveIngredient a = ingredientRepository
+                .findById(rule.getIngredientA().getId())
+                .orElseThrow(() -> new RuntimeException("Ingredient A not found"));
+
+        ActiveIngredient b = ingredientRepository
+                .findById(rule.getIngredientB().getId())
+                .orElseThrow(() -> new RuntimeException("Ingredient B not found"));
+
+        rule.setIngredientA(a);
+        rule.setIngredientB(b);
+
         return ruleRepository.save(rule);
     }
 
@@ -27,4 +43,3 @@ public class RuleServiceImpl implements RuleService {
         return ruleRepository.findAll();
     }
 }
-
