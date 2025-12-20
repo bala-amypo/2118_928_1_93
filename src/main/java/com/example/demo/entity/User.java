@@ -3,7 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users") // optional
+@Table(name = "users")   // user is reserved word in MySQL
 public class User {
 
     @Id
@@ -12,14 +12,15 @@ public class User {
 
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     private String password;
 
-    private String role; // <-- add this
+    private String role;
 
-    // getters and setters
+    // ----- getters & setters -----
+
     public Long getId() {
         return id;
     }
@@ -52,11 +53,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {    // <-- add getter
+    public String getRole() {
         return role;
     }
 
-    public void setRole(String role) { // <-- add setter
+    public void setRole(String role) {
         this.role = role;
     }
 }
