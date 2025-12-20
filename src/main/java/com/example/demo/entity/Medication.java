@@ -12,7 +12,12 @@ public class Medication {
 
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "medication_ingredients",
+        joinColumns = @JoinColumn(name = "medication_id"),
+        inverseJoinColumns = @JoinColumn(name = "ingredient_id")
+    )
     private Set<ActiveIngredient> ingredients;
 
     public Long getId() {

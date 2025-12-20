@@ -4,7 +4,10 @@ import com.example.demo.entity.*;
 import com.example.demo.repository.*;
 import com.example.demo.service.CatalogService;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CatalogServiceImpl implements CatalogService {
@@ -23,6 +26,22 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     public Medication addMedication(Medication medication) {
+
+        // 🔥 IMPORTANT PART
+        Set<ActiveIngredient> managedIngredients = new HashSet<>();
+
+        for (ActiveIngredient ing : medication.getIngredients()) {
+            ActiveIngredient dbIngredient =
+                    ingredientRepo.findById(ing.getId())
+                    .orElseThrow(() -> new RuntimeException(
+                        "Ingredient not found with id: " + ing.getId()
+                    ));
+
+            managedIngredients.add(dbIngredient);
+        }
+
+        medication.setIngredients(managedIngredients);
+
         return medicationRepo.save(medication);
     }
 
