@@ -11,11 +11,11 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // 🔐 minimum 256-bit key required
+   
     private static final String SECRET =
             "mysecretkeymysecretkeymysecretkey123";
 
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60; 
 
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
