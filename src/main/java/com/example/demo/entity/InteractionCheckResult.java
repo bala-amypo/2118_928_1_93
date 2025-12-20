@@ -10,15 +10,12 @@ public class InteractionCheckResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // example: "Dol + A Tablet"
     private String medications;
 
-    // example: "No known interaction"
     private String interactions;
 
     private LocalDateTime checkedAt;
 
-    // ===== getters & setters =====
 
     public Long getId() {
         return id;

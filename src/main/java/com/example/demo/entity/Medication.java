@@ -15,7 +15,7 @@ public class Medication {
 
     @ManyToMany(
         fetch = FetchType.EAGER,
-        cascade = CascadeType.MERGE   // ⭐ IMPORTANT FIX
+        cascade = CascadeType.MERGE  
     )
     @JoinTable(
         name = "medication_ingredients",
@@ -24,7 +24,6 @@ public class Medication {
     )
     private Set<ActiveIngredient> ingredients;
 
-    // ===== getters & setters =====
 
     public Long getId() {
         return id;
