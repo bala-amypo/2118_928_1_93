@@ -1,10 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.LoginRequest;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -23,16 +23,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody Map<String, String> request) {
+    public Map<String, String> login(@RequestBody LoginRequest request) {
 
-        String email = request.get("email");
-        String password = request.get("password");
+        userService.login(request.getEmail(), request.getPassword());
 
-        String result = userService.login(email, password);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("token", result);
-
-        return response;
+        return Map.of("token", "LOGIN_SUCCESS");
     }
 }

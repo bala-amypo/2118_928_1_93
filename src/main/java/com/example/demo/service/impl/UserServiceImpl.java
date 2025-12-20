@@ -5,8 +5,6 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -23,19 +21,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(String email, String password) {
-        Optional<User> userOpt = userRepository.findByEmail(email);
-
-        if (userOpt.isEmpty()) {
-            throw new RuntimeException("User not found");
-        }
-
-        User user = userOpt.get();
+    public void login(String email, String password) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!user.getPassword().equals(password)) {
             throw new RuntimeException("Invalid password");
         }
-
-        return "LOGIN_SUCCESS";
     }
 }
