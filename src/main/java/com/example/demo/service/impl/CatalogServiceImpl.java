@@ -1,7 +1,9 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
-import com.example.demo.repository.*;
+import com.example.demo.entity.ActiveIngredient;
+import com.example.demo.entity.Medication;
+import com.example.demo.repository.ActiveIngredientRepository;
+import com.example.demo.repository.MedicationRepository;
 import com.example.demo.service.CatalogService;
 import org.springframework.stereotype.Service;
 
@@ -21,30 +23,32 @@ public class CatalogServiceImpl implements CatalogService {
         this.medicationRepo = medicationRepo;
     }
 
+    @Override
     public ActiveIngredient addIngredient(ActiveIngredient ingredient) {
         return ingredientRepo.save(ingredient);
     }
 
+    @Override
     public Medication addMedication(Medication medication) {
 
-        // 🔥 IMPORTANT PART
-        Set<ActiveIngredient> managedIngredients = new HashSet<>();
+        Set<ActiveIngredient> resolvedIngredients = new HashSet<>();
 
         for (ActiveIngredient ing : medication.getIngredients()) {
-            ActiveIngredient dbIngredient =
-                    ingredientRepo.findById(ing.getId())
-                    .orElseThrow(() -> new RuntimeException(
-                        "Ingredient not found with id: " + ing.getId()
-                    ));
+            ActiveIngredient dbIngredient = ingredientRepo
+                    .findById(ing.getId())
+                    .orElseThrow(() ->
+                        new RuntimeException("Ingredient not found with id: " + ing.getId())
+                    );
 
-            managedIngredients.add(dbIngredient);
+            resolvedIngredients.add(dbIngredient);
         }
 
-        medication.setIngredients(managedIngredients);
+        medication.setIngredients(resolvedIngredients);
 
         return medicationRepo.save(medication);
     }
 
+    @Override
     public List<Medication> getAllMedications() {
         return medicationRepo.findAll();
     }

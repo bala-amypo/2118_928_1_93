@@ -27,3 +27,4 @@ public class RuleServiceImpl implements RuleService {
         return ruleRepository.findAll();
     }
 }
+

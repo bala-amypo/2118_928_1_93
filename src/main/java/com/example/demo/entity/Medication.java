@@ -12,7 +12,7 @@ public class Medication {
 
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
         name = "medication_ingredients",
         joinColumns = @JoinColumn(name = "medication_id"),
