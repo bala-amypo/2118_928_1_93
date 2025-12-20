@@ -15,12 +15,22 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                        "/auth/**",
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**",
-                        "/catalog/**",
-                        "/rules/**",
-                        "/interactions/**"
+                    "/",
+                    "/auth/**",
+
+                    // Swagger UI
+                    "/swagger-ui.html",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/v3/api-docs.yaml",
+
+                    // Static resources (IMPORTANT)
+                    "/webjars/**",
+
+                    // Your APIs
+                    "/catalog/**",
+                    "/rules/**",
+                    "/interactions/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             );
