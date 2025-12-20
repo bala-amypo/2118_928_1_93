@@ -10,15 +10,21 @@ public class Medication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
-    @ManyToMany
+    @ManyToMany(
+        fetch = FetchType.EAGER,
+        cascade = CascadeType.MERGE   // ⭐ IMPORTANT FIX
+    )
     @JoinTable(
         name = "medication_ingredients",
         joinColumns = @JoinColumn(name = "medication_id"),
         inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
     private Set<ActiveIngredient> ingredients;
+
+    // ===== getters & setters =====
 
     public Long getId() {
         return id;
