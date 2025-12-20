@@ -10,18 +10,22 @@ public class InteractionCheckResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // example: "Dol + A Tablet"
     private String medications;
+
+    // example: "No known interaction"
     private String interactions;
 
     private LocalDateTime checkedAt;
 
-    @PrePersist
-    public void setTime() {
-        this.checkedAt = LocalDateTime.now();
-    }
+    // ===== getters & setters =====
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getMedications() {
@@ -42,5 +46,9 @@ public class InteractionCheckResult {
 
     public LocalDateTime getCheckedAt() {
         return checkedAt;
+    }
+
+    public void setCheckedAt(LocalDateTime checkedAt) {
+        this.checkedAt = checkedAt;
     }
 }

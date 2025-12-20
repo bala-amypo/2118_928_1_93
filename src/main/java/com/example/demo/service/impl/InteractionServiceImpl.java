@@ -6,7 +6,6 @@ import com.example.demo.service.InteractionService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class InteractionServiceImpl implements InteractionService {
@@ -18,12 +17,8 @@ public class InteractionServiceImpl implements InteractionService {
     }
 
     @Override
-    public InteractionCheckResult checkInteractions(List<Long> medicationIds) {
-
-        InteractionCheckResult result = new InteractionCheckResult();
-        result.setInteractions("NO_RULE_CHECK_YET");
+    public InteractionCheckResult saveResult(InteractionCheckResult result) {
         result.setCheckedAt(LocalDateTime.now());
-
         return repository.save(result);
     }
 }
