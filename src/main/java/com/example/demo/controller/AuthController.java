@@ -4,6 +4,7 @@ import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -23,9 +24,15 @@ public class AuthController {
 
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody Map<String, String> request) {
-        return userService.login(
-                request.get("email"),
-                request.get("password")
-        );
+
+        String email = request.get("email");
+        String password = request.get("password");
+
+        String result = userService.login(email, password);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", result);
+
+        return response;
     }
 }
