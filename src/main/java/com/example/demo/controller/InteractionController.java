@@ -16,14 +16,12 @@ public class InteractionController {
         this.service = service;
     }
 
-    // POST /interactions
     @PostMapping
     public InteractionCheckResult checkInteractions(
             @RequestBody InteractionRequest request) {
         return service.checkInteractions(request.getMedications());
     }
 
-    // GET /interactions/result/{id}
     @GetMapping("/result/{id}")
     public InteractionCheckResult getResultById(@PathVariable Long id) {
         return service.getResultById(id);
