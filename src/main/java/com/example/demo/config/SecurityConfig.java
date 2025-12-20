@@ -18,16 +18,13 @@ public class SecurityConfig {
                     "/",
                     "/auth/**",
 
-                    // Swagger UI
                     "/swagger-ui.html",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/v3/api-docs.yaml",
 
-                    // Static resources (IMPORTANT)
                     "/webjars/**",
 
-                    // Your APIs
                     "/catalog/**",
                     "/rules/**",
                     "/interactions/**"
