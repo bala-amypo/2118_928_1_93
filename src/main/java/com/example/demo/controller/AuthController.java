@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.LoginRequest;
-import com.example.demo.entity.User;
+import com.example.demo.dto.RegisterRequest;
+import com.example.demo.model.User;
 import com.example.demo.service.UserService;
+import com.example.demo.util.JwtUtil;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -12,21 +15,50 @@ import java.util.Map;
 public class AuthController {
 
     private final UserService userService;
+    private final PasswordEncoder encoder;
+    private final JwtUtil jwtUtil;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService,
+                          PasswordEncoder encoder,
+                          JwtUtil jwtUtil) {
         this.userService = userService;
+        this.encoder = encoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        return userService.register(user);
+    public User register(@RequestBody RegisterRequest request) {
+
+        User user = new User(
+                request.getName(),
+                request.getEmail(),
+                request.getPassword(),
+                request.getRole()
+        );
+
+        return userService.registerUser(user);
     }
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody LoginRequest request) {
+    public Map<String, String> login(
+            @RequestBody LoginRequest request) {
 
-        userService.login(request.getEmail(), request.getPassword());
+        User user =
+                userService.findByEmail(request.getEmail());
 
-        return Map.of("token", "LOGIN_SUCCESS");
+        if (!encoder.matches(
+                request.getPassword(),
+                user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        String token =
+                jwtUtil.generateToken(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getRole()
+                );
+
+        return Map.of("token", token);
     }
 }
