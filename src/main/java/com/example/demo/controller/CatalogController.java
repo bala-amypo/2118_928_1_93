@@ -1,34 +1,34 @@
-package com.example.demo.controller;
+package com.example.demo.security;
 
-import com.example.demo.entity.ActiveIngredient;
-import com.example.demo.entity.Medication;
-import com.example.demo.service.CatalogService;
-import org.springframework.web.bind.annotation.*;
+import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.*;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/catalog")
-public class CatalogController {
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
 
-    private final CatalogService catalogService;
+    private final UserRepository userRepository;
 
-    public CatalogController(CatalogService catalogService) {
-        this.catalogService = catalogService;
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    @PostMapping("/ingredient")
-    public ActiveIngredient addIngredient(@RequestBody ActiveIngredient ingredient) {
-        return catalogService.addIngredient(ingredient);
-    }
+    @Override
+    public UserDetails loadUserByUsername(String email)
+            throws UsernameNotFoundException {
 
-    @PostMapping("/medication")
-    public Medication addMedication(@RequestBody Medication medication) {
-        return catalogService.addMedication(medication);
-    }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found"));
 
-    @GetMapping("/medications")
-    public List<Medication> getAllMedications() {
-        return catalogService.getAllMedications();
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
+        );
     }
 }

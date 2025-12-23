@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
-import com.example.demo.model.User;
+import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import com.example.demo.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,49 +15,39 @@ import java.util.Map;
 public class AuthController {
 
     private final UserService userService;
-    private final PasswordEncoder encoder;
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthController(UserService userService,
-                          PasswordEncoder encoder,
-                          JwtUtil jwtUtil) {
+                          JwtUtil jwtUtil,
+                          PasswordEncoder passwordEncoder) {
         this.userService = userService;
-        this.encoder = encoder;
         this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/register")
     public User register(@RequestBody RegisterRequest request) {
 
-        User user = new User(
-                request.getName(),
-                request.getEmail(),
-                request.getPassword(),
-                request.getRole()
-        );
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
 
-        return userService.registerUser(user);
+        return userService.register(user);
     }
 
     @PostMapping("/login")
-    public Map<String, String> login(
-            @RequestBody LoginRequest request) {
+    public Map<String, String> login(@RequestBody LoginRequest request) {
 
-        User user =
-                userService.findByEmail(request.getEmail());
+        User user = userService.findByEmail(request.getEmail());
 
-        if (!encoder.matches(
-                request.getPassword(),
-                user.getPassword())) {
+        if (user == null ||
+            !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
 
-        String token =
-                jwtUtil.generateToken(
-                        user.getId(),
-                        user.getEmail(),
-                        user.getRole()
-                );
+        String token = jwtUtil.generateToken(user.getEmail());
 
         return Map.of("token", token);
     }
