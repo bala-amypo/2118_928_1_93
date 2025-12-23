@@ -1,34 +1,34 @@
-package com.example.demo.security;
+package com.example.demo.controller;
 
-import com.example.demo.entity.User;
-import com.example.demo.repository.UserRepository;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.*;
-import org.springframework.stereotype.Service;
+import com.example.demo.entity.ActiveIngredient;
+import com.example.demo.entity.Medication;
+import com.example.demo.service.CatalogService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Service
-public class CustomUserDetailsService implements UserDetailsService {
+@RestController
+@RequestMapping("/catalog")
+public class CatalogController {
 
-    private final UserRepository userRepository;
+    private final CatalogService catalogService;
 
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CatalogController(CatalogService catalogService) {
+        this.catalogService = catalogService;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email)
-            throws UsernameNotFoundException {
+    @PostMapping("/ingredient")
+    public ActiveIngredient addIngredient(@RequestBody ActiveIngredient ingredient) {
+        return catalogService.addIngredient(ingredient);
+    }
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found"));
+    @PostMapping("/medication")
+    public Medication addMedication(@RequestBody Medication medication) {
+        return catalogService.addMedication(medication);
+    }
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
-        );
+    @GetMapping("/medications")
+    public List<Medication> getAllMedications() {
+        return catalogService.getAllMedications();
     }
 }
