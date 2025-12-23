@@ -15,39 +15,49 @@ import java.util.Map;
 public class AuthController {
 
     private final UserService userService;
-    private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     public AuthController(UserService userService,
-                          JwtUtil jwtUtil,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          JwtUtil jwtUtil) {
         this.userService = userService;
-        this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
+    // ================= REGISTER =================
     @PostMapping("/register")
     public User register(@RequestBody RegisterRequest request) {
 
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        User user = new User(
+                request.getName(),
+                request.getEmail(),
+                request.getPassword(),
+                request.getRole()   // null irundhaal service USER nu set pannum
+        );
 
-        return userService.register(user);
+        return userService.registerUser(user);
     }
 
+    // ================= LOGIN =================
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody LoginRequest request) {
 
         User user = userService.findByEmail(request.getEmail());
 
-        if (user == null ||
-            !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
 
-        String token = jwtUtil.generateToken(user.getEmail());
+        // ✅ CORRECT JWT CALL (3 params)
+        String token = jwtUtil.generateToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
 
         return Map.of("token", token);
     }
