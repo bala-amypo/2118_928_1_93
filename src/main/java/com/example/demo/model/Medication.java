@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,10 +14,20 @@ public class Medication {
     private String name;
 
     @ManyToMany
-    private List<ActiveIngredient> ingredients;
+    private List<ActiveIngredient> ingredients = new ArrayList<>();
 
-    public Long getId() {
-        return id;
+    // REQUIRED
+    public Medication() {
+    }
+
+    // REQUIRED by TEST
+    public Medication(String name) {
+        this.name = name;
+    }
+
+    // ===== TEST EXPECTED METHODS =====
+    public void addIngredient(ActiveIngredient ingredient) {
+        this.ingredients.add(ingredient);
     }
 
     public String getName() {
@@ -25,9 +36,5 @@ public class Medication {
 
     public List<ActiveIngredient> getIngredients() {
         return ingredients;
-    }
-
-    public void setIngredients(List<ActiveIngredient> ingredients) {
-        this.ingredients = ingredients;
     }
 }

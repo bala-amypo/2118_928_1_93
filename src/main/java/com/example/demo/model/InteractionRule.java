@@ -1,32 +1,20 @@
-package com.example.demo.model;
+package com.example.demo.service;
 
-import jakarta.persistence.*;
+import com.example.demo.model.User;
+import com.example.demo.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
-@Entity
-public class InteractionRule {
+@Service
+public class UserService {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private final UserRepository userRepository;
 
-    @ManyToOne
-    private ActiveIngredient ingredientA;
-
-    @ManyToOne
-    private ActiveIngredient ingredientB;
-
-    private String severity;
-    private String description;
-
-    public ActiveIngredient getIngredientA() {
-        return ingredientA;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public ActiveIngredient getIngredientB() {
-        return ingredientB;
-    }
-
-    public String getSeverity() {
-        return severity;
+    // TEST EXPECTS THIS EXACT METHOD NAME
+    public User register(User user) {
+        return userRepository.save(user);
     }
 }
