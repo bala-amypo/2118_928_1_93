@@ -1,17 +1,20 @@
 package com.example.demo.servlet;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/hello-servlet")
+import java.io.IOException;
+
+@WebServlet("/hello")
 public class SimpleHelloServlet extends HttpServlet {
-
+    
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse res) {
-        try {
-            res.getWriter().write("Hello Servlet Working");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        response.setContentType("text/html");
+        response.getWriter().println("<h1>Hello from Drug Interaction Checker API!</h1>");
     }
 }

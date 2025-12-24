@@ -1,54 +1,89 @@
 package com.example.demo.service.impl;
 
-
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
 import com.example.demo.service.InteractionService;
 import org.springframework.stereotype.Service;
-import java.util.*;
 
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class InteractionServiceImpl implements InteractionService {
-
-
-private final MedicationRepository medRepo;
-private final InteractionRuleRepository ruleRepo;
-private final InteractionCheckResultRepository resultRepo;
-
-
-public InteractionServiceImpl(MedicationRepository m, InteractionRuleRepository r, InteractionCheckResultRepository i) {
-this.medRepo = m;
-this.ruleRepo = r;
-this.resultRepo = i;
-}
-
-
-public InteractionCheckResult checkInteractions(List<Long> ids) {
-List<Medication> meds = medRepo.findAllById(ids);
-Set<ActiveIngredient> ingredients = new HashSet<>();
-meds.forEach(m -> ingredients.addAll(m.getIngredients()));
-
-
-int count = 0;
-for (ActiveIngredient a : ingredients) {
-for (ActiveIngredient b : ingredients) {
-if (!a.equals(b) && ruleRepo.findRuleBetweenIngredients(a.getId(), b.getId()).isPresent())
-count++;
-}
-}
-
-
-String medsStr = meds.stream().map(Medication::getName).reduce((a,b)->a+","+b).orElse("");
-String json = "{\"interactionCount\":" + count + "}";
-
-
-return resultRepo.save(new InteractionCheckResult(medsStr, json));
-}
-
-
-public InteractionCheckResult getResult(Long id) {
-return resultRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Result not found"));
-}
+    private final MedicationRepository medicationRepository;
+    private final InteractionRuleRepository ruleRepository;
+    private final InteractionCheckResultRepository resultRepository;
+    
+    public InteractionServiceImpl(MedicationRepository medicationRepository, 
+                                InteractionRuleRepository ruleRepository,
+                                InteractionCheckResultRepository resultRepository) {
+        this.medicationRepository = medicationRepository;
+        this.ruleRepository = ruleRepository;
+        this.resultRepository = resultRepository;
+    }
+    
+    @Override
+    public InteractionCheckResult checkInteractions(List<Long> medicationIds) {
+        List<Medication> medications = medicationRepository.findAllById(medicationIds);
+        
+        Set<ActiveIngredient> allIngredients = medications.stream()
+                .flatMap(med -> med.getIngredients().stream())
+                .collect(Collectors.toSet());
+        
+        List<InteractionRule> interactions = new ArrayList<>();
+        List<ActiveIngredient> ingredientList = new ArrayList<>(allIngredients);
+        
+        for (int i = 0; i < ingredientList.size(); i++) {
+            for (int j = i + 1; j < ingredientList.size(); j++) {
+                ActiveIngredient ing1 = ingredientList.get(i);
+                ActiveIngredient ing2 = ingredientList.get(j);
+                
+                ruleRepository.findRuleBetweenIngredients(ing1.getId(), ing2.getId())
+                        .ifPresent(interactions::add);
+            }
+        }
+        
+        String medicationNames = medications.stream()
+                .map(Medication::getName)
+                .collect(Collectors.joining(", "));
+        
+        String interactionJson = buildInteractionJson(interactions);
+        
+        InteractionCheckResult result = new InteractionCheckResult(medicationNames, interactionJson);
+        return resultRepository.save(result);
+    }
+    
+    @Override
+    public InteractionCheckResult getResult(Long resultId) {
+        return resultRepository.findById(resultId)
+                .orElseThrow(() -> new ResourceNotFoundException("Result not found"));
+    }
+    
+    private String buildInteractionJson(List<InteractionRule> interactions) {
+        Map<String, Long> severityCounts = interactions.stream()
+                .collect(Collectors.groupingBy(InteractionRule::getSeverity, Collectors.counting()));
+        
+        StringBuilder json = new StringBuilder("{");
+        json.append("\"totalInteractions\":").append(interactions.size()).append(",");
+        json.append("\"severityCounts\":{");
+        json.append("\"MINOR\":").append(severityCounts.getOrDefault("MINOR", 0L)).append(",");
+        json.append("\"MODERATE\":").append(severityCounts.getOrDefault("MODERATE", 0L)).append(",");
+        json.append("\"MAJOR\":").append(severityCounts.getOrDefault("MAJOR", 0L));
+        json.append("},\"interactions\":[");
+        
+        for (int i = 0; i < interactions.size(); i++) {
+            InteractionRule rule = interactions.get(i);
+            json.append("{");
+            json.append("\"ingredientA\":\"").append(rule.getIngredientA().getName()).append("\",");
+            json.append("\"ingredientB\":\"").append(rule.getIngredientB().getName()).append("\",");
+            json.append("\"severity\":\"").append(rule.getSeverity()).append("\",");
+            json.append("\"description\":\"").append(rule.getDescription()).append("\"");
+            json.append("}");
+            if (i < interactions.size() - 1) json.append(",");
+        }
+        
+        json.append("]}");
+        return json.toString();
+    }
 }
