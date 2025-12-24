@@ -16,11 +16,13 @@ public class RuleController {
         this.ruleService = ruleService;
     }
 
+    // ADD RULE
     @PostMapping
     public InteractionRule addRule(@RequestBody InteractionRule rule) {
         return ruleService.addRule(rule);
     }
 
+    // GET ALL RULES
     @GetMapping
     public List<InteractionRule> getAllRules() {
         return ruleService.getAllRules();
