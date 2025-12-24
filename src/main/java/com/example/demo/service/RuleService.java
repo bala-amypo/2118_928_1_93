@@ -4,6 +4,8 @@ import com.example.demo.model.InteractionRule;
 
 public interface RuleService {
 
-    // 🔥 TEST EXPECTS addRule()
     InteractionRule addRule(InteractionRule rule);
+
+    // ✅ REQUIRED by controller
+    InteractionRule saveRule(InteractionRule rule);
 }
