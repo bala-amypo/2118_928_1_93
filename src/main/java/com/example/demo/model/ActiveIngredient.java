@@ -11,6 +11,15 @@ public class ActiveIngredient {
 
     private String name;
 
+    // ✅ REQUIRED by tests
+    public ActiveIngredient() {
+    }
+
+    // ✅ REQUIRED by tests
+    public ActiveIngredient(String name) {
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }

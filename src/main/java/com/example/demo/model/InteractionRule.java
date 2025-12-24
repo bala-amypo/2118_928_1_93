@@ -18,6 +18,23 @@ public class InteractionRule {
     private String severity;
     private String description;
 
+    // ✅ REQUIRED by tests
+    public InteractionRule() {
+    }
+
+    // ✅ REQUIRED by tests
+    public InteractionRule(
+            ActiveIngredient ingredientA,
+            ActiveIngredient ingredientB,
+            String severity,
+            String description) {
+
+        this.ingredient1 = ingredientA;
+        this.ingredient2 = ingredientB;
+        this.severity = severity;
+        this.description = description;
+    }
+
     public Long getId() {
         return id;
     }
@@ -26,22 +43,24 @@ public class InteractionRule {
         this.id = id;
     }
 
-    public ActiveIngredient getIngredient1() {
+    // 🔥 TEST EXPECTS ingredientA / ingredientB NAMES
+    public ActiveIngredient getIngredientA() {
         return ingredient1;
     }
 
-    public void setIngredient1(ActiveIngredient ingredient1) {
-        this.ingredient1 = ingredient1;
+    public void setIngredientA(ActiveIngredient ingredientA) {
+        this.ingredient1 = ingredientA;
     }
 
-    public ActiveIngredient getIngredient2() {
+    public ActiveIngredient getIngredientB() {
         return ingredient2;
     }
 
-    public void setIngredient2(ActiveIngredient ingredient2) {
-        this.ingredient2 = ingredient2;
+    public void setIngredientB(ActiveIngredient ingredientB) {
+        this.ingredient2 = ingredientB;
     }
 
+    // existing getters/setters still ok
     public String getSeverity() {
         return severity;
     }

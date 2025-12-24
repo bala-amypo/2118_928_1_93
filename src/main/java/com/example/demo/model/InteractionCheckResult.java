@@ -1,42 +1,31 @@
 package com.example.demo.model;
 
-
-
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-
-@Entity
-@Table(name = "interaction_check_results")
 public class InteractionCheckResult {
 
+    private String interactions;
+    private LocalDateTime checkedAt;
 
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Long id;
+    public InteractionCheckResult() {
+        this.checkedAt = LocalDateTime.now();
+    }
 
+    // ✅ REQUIRED by tests
+    public String getInteractions() {
+        return interactions;
+    }
 
-private String medications;
+    public void setInteractions(String interactions) {
+        this.interactions = interactions;
+    }
 
+    // ✅ REQUIRED by tests
+    public LocalDateTime getCheckedAt() {
+        return checkedAt;
+    }
 
-@Column(columnDefinition = "TEXT")
-private String interactions;
-
-
-private LocalDateTime checkedAt;
-
-
-public InteractionCheckResult() {
-this.checkedAt = LocalDateTime.now();
-}
-
-
-public InteractionCheckResult(String medications, String interactions) {
-this.medications = medications;
-this.interactions = interactions;
-this.checkedAt = LocalDateTime.now();
-}
-
-
-// getters and setters
+    public void setCheckedAt(LocalDateTime checkedAt) {
+        this.checkedAt = checkedAt;
+    }
 }

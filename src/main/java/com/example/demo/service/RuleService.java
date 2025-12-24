@@ -3,5 +3,7 @@ package com.example.demo.service;
 import com.example.demo.model.InteractionRule;
 
 public interface RuleService {
-    InteractionRule saveRule(InteractionRule rule);
+
+    // 🔥 TEST EXPECTS addRule()
+    InteractionRule addRule(InteractionRule rule);
 }
