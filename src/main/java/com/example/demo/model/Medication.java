@@ -19,37 +19,22 @@ public class Medication {
     public Medication() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    // ✅ FIX for test typo: setSetName()
-    public void setSetName(String name) {
+    public Medication(String name) {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public Set<ActiveIngredient> getIngredients() { return ingredients; }
+    public void setIngredients(Set<ActiveIngredient> ingredients) {
+        this.ingredients = ingredients;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<ActiveIngredient> getIngredients() {
-        return ingredients;
-    }
-
-    public void addIngredient(ActiveIngredient ingredient) {
-        ingredients.add(ingredient);
-    }
-
-    // ✅ REQUIRED by tests
     public void removeIngredient(ActiveIngredient ingredient) {
-        ingredients.remove(ingredient);
+        this.ingredients.remove(ingredient);
     }
 }
