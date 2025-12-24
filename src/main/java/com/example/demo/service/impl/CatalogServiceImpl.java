@@ -4,11 +4,10 @@ import com.example.demo.model.ActiveIngredient;
 import com.example.demo.model.Medication;
 import com.example.demo.service.CatalogService;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@Service  // Important! Makes it a Spring Bean
+@Service
 public class CatalogServiceImpl implements CatalogService {
 
     private final List<ActiveIngredient> ingredients = new ArrayList<>();
