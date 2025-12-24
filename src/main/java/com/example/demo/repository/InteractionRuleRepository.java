@@ -9,9 +9,9 @@ import java.util.Optional;
 public interface InteractionRuleRepository extends JpaRepository<InteractionRule, Long> {
 
     @Query("""
-        SELECT r FROM InteractionRule r
-        WHERE (r.ingredientA.id = :id1 AND r.ingredientB.id = :id2)
-           OR (r.ingredientA.id = :id2 AND r.ingredientB.id = :id1)
+      SELECT r FROM InteractionRule r
+      WHERE (r.ingredientA.id = :a AND r.ingredientB.id = :b)
+         OR (r.ingredientA.id = :b AND r.ingredientB.id = :a)
     """)
-    Optional<InteractionRule> findRuleBetweenIngredients(Long id1, Long id2);
+    Optional<InteractionRule> findRuleBetweenIngredients(Long a, Long b);
 }
