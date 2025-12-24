@@ -1,39 +1,39 @@
-package com.example.demo.service.impl;
+// package com.example.demo.service.impl;
 
-import com.example.demo.model.InteractionRule;
-import com.example.demo.repository.InteractionRuleRepository;
-import com.example.demo.service.RuleService;
-import org.springframework.stereotype.Service;
+// import com.example.demo.model.InteractionRule;
+// import com.example.demo.repository.InteractionRuleRepository;
+// import com.example.demo.service.RuleService;
+// import org.springframework.stereotype.Service;
 
-import java.util.List;
+// import java.util.List;
 
-@Service
-public class RuleServiceImpl implements RuleService {
+// @Service
+// public class RuleServiceImpl implements RuleService {
 
-    private final InteractionRuleRepository ruleRepository;
+//     private final InteractionRuleRepository ruleRepository;
 
-    public RuleServiceImpl(InteractionRuleRepository ruleRepository) {
-        this.ruleRepository = ruleRepository;
-    }
+//     public RuleServiceImpl(InteractionRuleRepository ruleRepository) {
+//         this.ruleRepository = ruleRepository;
+//     }
 
-    @Override
-    public InteractionRule addRule(InteractionRule rule) {
-        ruleRepository.findRuleBetweenIngredients(
-                rule.getIngredientA().getId(),
-                rule.getIngredientB().getId()
-        ).ifPresent(r -> {
-            throw new IllegalArgumentException("Rule already exists");
-        });
+//     @Override
+//     public InteractionRule addRule(InteractionRule rule) {
+//         ruleRepository.findRuleBetweenIngredients(
+//                 rule.getIngredientA().getId(),
+//                 rule.getIngredientB().getId()
+//         ).ifPresent(r -> {
+//             throw new IllegalArgumentException("Rule already exists");
+//         });
 
-        if (!rule.getSeverity().matches("MINOR|MODERATE|MAJOR")) {
-            throw new IllegalArgumentException("Invalid severity");
-        }
+//         if (!rule.getSeverity().matches("MINOR|MODERATE|MAJOR")) {
+//             throw new IllegalArgumentException("Invalid severity");
+//         }
 
-        return ruleRepository.save(rule);
-    }
+//         return ruleRepository.save(rule);
+//     }
 
-    @Override
-    public List<InteractionRule> getAllRules() {
-        return ruleRepository.findAll();
-    }
-}
+//     @Override
+//     public List<InteractionRule> getAllRules() {
+//         return ruleRepository.findAll();
+//     }
+// }
