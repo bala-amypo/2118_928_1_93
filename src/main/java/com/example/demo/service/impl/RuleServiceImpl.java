@@ -15,7 +15,7 @@ public class RuleServiceImpl implements RuleService {
     }
 
     @Override
-    public InteractionRule addRule(InteractionRule rule) {
+    public InteractionRule saveRule(InteractionRule rule) {   // 👈 SAME NAME
         return repository.save(rule);
     }
 }

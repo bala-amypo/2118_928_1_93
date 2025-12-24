@@ -17,6 +17,12 @@ public class InteractionCheckResult {
         this.checkedAt = LocalDateTime.now();
     }
 
+    // ✅ ADD THIS CONSTRUCTOR
+    public InteractionCheckResult(String interactions, String ignored) {
+        this.interactions = interactions;
+        this.checkedAt = LocalDateTime.now();
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
