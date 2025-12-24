@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.ActiveIngredient;
-import com.example.demo.entity.Medication;
+import com.example.demo.model.ActiveIngredient;
+import com.example.demo.model.Medication;
 import com.example.demo.service.CatalogService;
 import org.springframework.web.bind.annotation.*;
 
