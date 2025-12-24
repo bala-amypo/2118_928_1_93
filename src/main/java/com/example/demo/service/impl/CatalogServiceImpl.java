@@ -1,53 +1,42 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.ActiveIngredient;
-import com.example.demo.entity.Medication;
-import com.example.demo.repository.ActiveIngredientRepository;
-import com.example.demo.repository.MedicationRepository;
-import com.example.demo.service.CatalogService;
-import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import com.example.demo.model.*;
+import com.example.demo.repository.*;
+import com.example.demo.service.CatalogService;
+import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Set;
+
 
 @Service
 public class CatalogServiceImpl implements CatalogService {
 
-    private final MedicationRepository medicationRepository;
-    private final ActiveIngredientRepository activeIngredientRepository;
 
-    public CatalogServiceImpl(MedicationRepository medicationRepository,
-                              ActiveIngredientRepository activeIngredientRepository) {
-        this.medicationRepository = medicationRepository;
-        this.activeIngredientRepository = activeIngredientRepository;
-    }
+private final ActiveIngredientRepository ingredientRepo;
+private final MedicationRepository medicationRepo;
 
-    @Override
-    public ActiveIngredient addIngredient(ActiveIngredient ingredient) {
-        return activeIngredientRepository.save(ingredient);
-    }
 
-    @Transactional
-    @Override
-    public Medication addMedication(Medication medication) {
+public CatalogServiceImpl(ActiveIngredientRepository i, MedicationRepository m) {
+this.ingredientRepo = i;
+this.medicationRepo = m;
+}
 
-        Set<ActiveIngredient> managedIngredients = new HashSet<>();
 
-        for (ActiveIngredient ing : medication.getIngredients()) {
-            ActiveIngredient dbIng =
-                    activeIngredientRepository.findById(ing.getId())
-                            .orElseThrow(() -> new RuntimeException("Ingredient not found"));
-            managedIngredients.add(dbIng);
-        }
+public ActiveIngredient addIngredient(ActiveIngredient ingredient) {
+if (ingredientRepo.existsByName(ingredient.getName()))
+throw new IllegalArgumentException("Ingredient already exists");
+return ingredientRepo.save(ingredient);
+}
 
-        medication.setIngredients(managedIngredients);
-        return medicationRepository.save(medication);
-    }
 
-    @Override
-    public List<Medication> getAllMedications() {
-        return medicationRepository.findAll();
-    }
+public Medication addMedication(Medication medication) {
+if (medication.getIngredients().isEmpty())
+throw new IllegalArgumentException("Medication must have at least one ingredient");
+return medicationRepo.save(medication);
+}
+
+
+public List<Medication> getAllMedications() {
+return medicationRepo.findAll();
+}
 }

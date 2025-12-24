@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.InteractionRule;
+
+import com.example.demo.model.InteractionRule;
 import java.util.List;
 
+
 public interface RuleService {
-    InteractionRule saveRule(InteractionRule rule);
-    List<InteractionRule> getAllRules();
+InteractionRule addRule(InteractionRule rule);
+List<InteractionRule> getAllRules();
 }
