@@ -1,51 +1,41 @@
 package com.example.demo.entity;
 
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+
 @Entity
+@Table(name = "interaction_check_results")
 public class InteractionCheckResult {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    private String medications;
-
-    private String interactions;
-
-    private LocalDateTime checkedAt;
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
 
 
-    public Long getId() {
-        return id;
-    }
+private String medications;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getMedications() {
-        return medications;
-    }
+@Column(columnDefinition = "TEXT")
+private String interactions;
 
-    public void setMedications(String medications) {
-        this.medications = medications;
-    }
 
-    public String getInteractions() {
-        return interactions;
-    }
+private LocalDateTime checkedAt;
 
-    public void setInteractions(String interactions) {
-        this.interactions = interactions;
-    }
 
-    public LocalDateTime getCheckedAt() {
-        return checkedAt;
-    }
+public InteractionCheckResult() {
+this.checkedAt = LocalDateTime.now();
+}
 
-    public void setCheckedAt(LocalDateTime checkedAt) {
-        this.checkedAt = checkedAt;
-    }
+
+public InteractionCheckResult(String medications, String interactions) {
+this.medications = medications;
+this.interactions = interactions;
+this.checkedAt = LocalDateTime.now();
+}
+
+
+// getters and setters
 }
