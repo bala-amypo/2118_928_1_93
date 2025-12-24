@@ -18,10 +18,4 @@ public class RuleServiceImpl implements RuleService {
     public InteractionRule addRule(InteractionRule rule) {
         return repository.save(rule);
     }
-
-    // ✅ FIX
-    @Override
-    public InteractionRule saveRule(InteractionRule rule) {
-        return repository.save(rule);
-    }
 }

@@ -10,70 +10,45 @@ public class InteractionRule {
     private Long id;
 
     @ManyToOne
-    private ActiveIngredient ingredient1;
+    private ActiveIngredient ingredientA;
 
     @ManyToOne
-    private ActiveIngredient ingredient2;
+    private ActiveIngredient ingredientB;
 
     private String severity;
     private String description;
 
-    // ✅ REQUIRED by tests
     public InteractionRule() {
     }
 
-    // ✅ REQUIRED by tests
     public InteractionRule(
             ActiveIngredient ingredientA,
             ActiveIngredient ingredientB,
             String severity,
-            String description) {
-
-        this.ingredient1 = ingredientA;
-        this.ingredient2 = ingredientB;
+            String description
+    ) {
+        this.ingredientA = ingredientA;
+        this.ingredientB = ingredientB;
         this.severity = severity;
         this.description = description;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    // 🔥 TEST EXPECTS ingredientA / ingredientB NAMES
-    public ActiveIngredient getIngredientA() {
-        return ingredient1;
-    }
-
+    public ActiveIngredient getIngredientA() { return ingredientA; }
     public void setIngredientA(ActiveIngredient ingredientA) {
-        this.ingredient1 = ingredientA;
+        this.ingredientA = ingredientA;
     }
 
-    public ActiveIngredient getIngredientB() {
-        return ingredient2;
-    }
-
+    public ActiveIngredient getIngredientB() { return ingredientB; }
     public void setIngredientB(ActiveIngredient ingredientB) {
-        this.ingredient2 = ingredientB;
+        this.ingredientB = ingredientB;
     }
 
-    // existing getters/setters still ok
-    public String getSeverity() {
-        return severity;
-    }
+    public String getSeverity() { return severity; }
+    public void setSeverity(String severity) { this.severity = severity; }
 
-    public void setSeverity(String severity) {
-        this.severity = severity;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }
