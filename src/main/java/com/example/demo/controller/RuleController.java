@@ -1,10 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.InteractionRule;
-import com.example.demo.service.RuleService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.example.demo.model.InteractionRule;
+import com.example.demo.service.RuleService;
 
 @RestController
 @RequestMapping("/rules")
@@ -16,15 +15,8 @@ public class RuleController {
         this.ruleService = ruleService;
     }
 
-    // ADD RULE
     @PostMapping
-    public InteractionRule addRule(@RequestBody InteractionRule rule) {
-        return ruleService.addRule(rule);
-    }
-
-    // GET ALL RULES
-    @GetMapping
-    public List<InteractionRule> getAllRules() {
-        return ruleService.getAllRules();
+    public InteractionRule saveRule(@RequestBody InteractionRule rule) {
+        return ruleService.saveRule(rule);
     }
 }
