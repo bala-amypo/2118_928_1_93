@@ -1,21 +1,24 @@
 package com.example.demo.repository;
 
-import com.example.demo.model.InteractionRule;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
+import com.example.demo.model.InteractionRule;
 
 public interface InteractionRuleRepository extends JpaRepository<InteractionRule, Long> {
 
     @Query("""
         SELECT r FROM InteractionRule r
-        WHERE (r.ingredient1.id = :id1 AND r.ingredient2.id = :id2)
-           OR (r.ingredient1.id = :id2 AND r.ingredient2.id = :id1)
+        WHERE 
+        (r.ingredientA.id = :a AND r.ingredientB.id = :b)
+        OR
+        (r.ingredientA.id = :b AND r.ingredientB.id = :a)
     """)
     Optional<InteractionRule> findRuleBetweenIngredients(
-            @Param("id1") Long id1,
-            @Param("id2") Long id2
+            @Param("a") Long ingredientAId,
+            @Param("b") Long ingredientBId
     );
 }
