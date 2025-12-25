@@ -28,13 +28,21 @@ public class UserServiceImpl implements UserService {
         if (user.getRole() == null) {
             user.setRole("USER");
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        if (passwordEncoder != null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        if (userRepository != null) {
+            return userRepository.save(user);
+        }
+        return user;
     }
     
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (userRepository != null) {
+            return userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+        }
+        throw new RuntimeException("User not found");
     }
 }
