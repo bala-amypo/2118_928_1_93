@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.ActiveIngredient;
-import com.example.demo.model.Medication;
+import com.example.demo.model.Drug;
 import com.example.demo.service.CatalogService;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,18 +16,18 @@ public class CatalogController {
         this.catalogService = catalogService;
     }
 
-    @PostMapping("/ingredient")
-    public ActiveIngredient addIngredient(@RequestBody ActiveIngredient ingredient) {
-        return catalogService.addIngredient(ingredient);
+    @PostMapping("/drug")
+    public Drug addDrug(@RequestBody Drug drug) {
+        return catalogService.addDrug(drug);
     }
 
-    @PostMapping("/medication")
-    public Medication addMedication(@RequestBody Medication medication) {
-        return catalogService.addMedication(medication);
+    @GetMapping("/drugs")
+    public List<Drug> getAllDrugs() {
+        return catalogService.getAllDrugs();
     }
 
-    @GetMapping("/medications")
-    public List<Medication> getAllMedications() {
-        return catalogService.getAllMedications();
+    @GetMapping("/drug/{id}")
+    public Drug getDrug(@PathVariable Long id) {
+        return catalogService.getDrugById(id);
     }
 }
