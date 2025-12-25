@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.model.InteractionRule;
 import com.example.demo.service.RuleService;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
