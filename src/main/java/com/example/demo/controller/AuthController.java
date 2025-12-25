@@ -30,8 +30,11 @@ public class AuthController {
     
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
-        User user = new User(request.getName(), request.getEmail(), request.getPassword(), request.getRole());
-        User savedUser = userService.registerUser(user);
+        User user = new User(request.getName(), request.getEmail(), request.getPassword());
+        if (request.getRole() != null) {
+            user.setRole(request.getRole());
+        }
+        User savedUser = userService.register(user);
         return ResponseEntity.ok(savedUser);
     }
     
