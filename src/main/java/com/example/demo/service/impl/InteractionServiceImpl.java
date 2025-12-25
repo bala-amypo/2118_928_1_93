@@ -1,55 +1,67 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.*;
-import com.example.demo.repository.*;
+import com.example.demo.repository.InteractionCheckResultRepository;
+import com.example.demo.repository.InteractionRuleRepository;
+import com.example.demo.repository.MedicationRepository;
 import com.example.demo.service.InteractionService;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class InteractionServiceImpl implements InteractionService {
 
-    private final MedicationRepository medRepo;
-    private final InteractionRuleRepository ruleRepo;
-    private final InteractionCheckResultRepository resultRepo;
+    private final MedicationRepository medicationRepository;
+    private final InteractionRuleRepository ruleRepository;
+    private final InteractionCheckResultRepository resultRepository;
 
-    public InteractionServiceImpl(
-            MedicationRepository medRepo,
-            InteractionRuleRepository ruleRepo,
-            InteractionCheckResultRepository resultRepo) {
-        this.medRepo = medRepo;
-        this.ruleRepo = ruleRepo;
-        this.resultRepo = resultRepo;
+    public InteractionServiceImpl(MedicationRepository medicationRepository,
+                                  InteractionRuleRepository ruleRepository,
+                                  InteractionCheckResultRepository resultRepository) {
+        this.medicationRepository = medicationRepository;
+        this.ruleRepository = ruleRepository;
+        this.resultRepository = resultRepository;
     }
 
     @Override
     public InteractionCheckResult checkInteractions(List<Long> medicationIds) {
 
-        List<Medication> meds = medRepo.findAllById(medicationIds);
+        List<Medication> medications = medicationRepository.findAllById(medicationIds);
 
-        if (meds.isEmpty()) {
-            throw new ResourceNotFoundException("Medications not found");
+        Set<ActiveIngredient> ingredients = medications.stream()
+                .flatMap(m -> m.getIngredients().stream())
+                .collect(Collectors.toSet());
+
+        List<InteractionRule> rules = ruleRepository.findAll();
+
+        List<String> found = new ArrayList<>();
+
+        for (InteractionRule rule : rules) {
+            if (ingredients.contains(rule.getIngredientA()) &&
+                ingredients.contains(rule.getIngredientB())) {
+                found.add(rule.getDescription());
+            }
         }
 
-        String medNames = meds.stream()
+        String meds = medications.stream()
                 .map(Medication::getName)
                 .collect(Collectors.joining(","));
 
-        String interactions = "INTERACTION_CHECKED";
+        String json = "{ \"count\": " + found.size() +
+                ", \"details\": " + found.toString() + " }";
 
         InteractionCheckResult result =
-                new InteractionCheckResult(medNames, interactions);
+                new InteractionCheckResult(meds, json);
 
-        return resultRepo.save(result);
+        return resultRepository.save(result);
     }
 
     @Override
     public InteractionCheckResult getResult(Long id) {
-        return resultRepo.findById(id)
+        return resultRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Result not found"));
     }
 }
