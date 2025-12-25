@@ -14,13 +14,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    private String name;
+    private String email;
     private String password;
     private String role;
 
-    // ✅ REQUIRED BY TEST
-    public User(String username, String password, String role) {
-        this.username = username;
+    // REQUIRED
+    public User(String name, String email, String password, String role) {
+        this.name = name;
+        this.email = email;
         this.password = password;
         this.role = role;
     }
