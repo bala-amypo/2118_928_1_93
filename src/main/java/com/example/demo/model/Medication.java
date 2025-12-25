@@ -3,7 +3,7 @@ package com.example.demo.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter
@@ -19,5 +19,19 @@ public class Medication {
     private String name;
 
     @ManyToMany
-    private List<ActiveIngredient> ingredients;
+    private Set<ActiveIngredient> activeIngredients = new HashSet<>();
+
+    // ✅ REQUIRED BY TEST
+    public Medication(String name) {
+        this.name = name;
+    }
+
+    // ✅ REQUIRED METHODS
+    public void addIngredient(ActiveIngredient ingredient) {
+        activeIngredients.add(ingredient);
+    }
+
+    public void removeIngredient(ActiveIngredient ingredient) {
+        activeIngredients.remove(ingredient);
+    }
 }

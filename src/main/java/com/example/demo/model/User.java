@@ -1,61 +1,27 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
-@Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ ADD THIS
-    private String name;
-
-    @Column(unique = true, nullable = false)
-    private String email;
-
+    private String username;
     private String password;
-
     private String role;
 
-    // ---------- GETTERS & SETTERS ----------
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    // ✅ THIS WAS MISSING
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
- 
-    public void setPassword(String password) {
+    // ✅ REQUIRED BY TEST
+    public User(String username, String password, String role) {
+        this.username = username;
         this.password = password;
-    }
- 
-    public String getRole() {
-        return role;
-    }
- 
-    public void setRole(String role) {
         this.role = role;
     }
 }

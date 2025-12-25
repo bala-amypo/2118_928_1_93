@@ -14,6 +14,10 @@ public class ActiveIngredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
     private String name;
+
+    // ✅ REQUIRED BY TEST
+    public ActiveIngredient(String name) {
+        this.name = name;
+    }
 }
