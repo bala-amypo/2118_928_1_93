@@ -1,14 +1,10 @@
+// CatalogService.java
 package com.example.demo.service;
-
-import com.example.demo.model.Drug;
-
 import java.util.List;
+import com.example.demo.model.*;
 
 public interface CatalogService {
-
-    Drug addDrug(Drug drug);
-
-    List<Drug> getAllDrugs();
-
-    Drug getDrugById(Long id);
+    ActiveIngredient addIngredient(ActiveIngredient i);
+    Medication addMedication(Medication m);
+    List<Medication> getAllMedications();
 }

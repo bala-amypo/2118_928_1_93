@@ -1,33 +1,33 @@
+// CatalogController.java
 package com.example.demo.controller;
 
-import com.example.demo.model.Drug;
-import com.example.demo.service.CatalogService;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import org.springframework.web.bind.annotation.*;
+import com.example.demo.model.*;
+import com.example.demo.service.CatalogService;
 
 @RestController
 @RequestMapping("/catalog")
 public class CatalogController {
 
-    private final CatalogService catalogService;
+    private final CatalogService s;
 
-    public CatalogController(CatalogService catalogService) {
-        this.catalogService = catalogService;
+    public CatalogController(CatalogService s) {
+        this.s = s;
     }
 
-    @PostMapping("/drug")
-    public Drug addDrug(@RequestBody Drug drug) {
-        return catalogService.addDrug(drug);
+    @PostMapping("/ingredient")
+    public ActiveIngredient add(@RequestBody ActiveIngredient i) {
+        return s.addIngredient(i);
     }
 
-    @GetMapping("/drugs")
-    public List<Drug> getAllDrugs() {
-        return catalogService.getAllDrugs();
+    @PostMapping("/medication")
+    public Medication add(@RequestBody Medication m) {
+        return s.addMedication(m);
     }
 
-    @GetMapping("/drug/{id}")
-    public Drug getDrug(@PathVariable Long id) {
-        return catalogService.getDrugById(id);
+    @GetMapping("/medications")
+    public List<Medication> all() {
+        return s.getAllMedications();
     }
 }
