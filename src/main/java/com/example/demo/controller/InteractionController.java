@@ -1,28 +1,28 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Interaction;
-import com.example.demo.service.InteractionService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.example.demo.dto.InteractionCheckRequest;
+import com.example.demo.model.InteractionCheckResult;
+import com.example.demo.service.InteractionService;
 
 @RestController
-@RequestMapping("/interactions")
+@RequestMapping("/interact")
 public class InteractionController {
 
-    private final InteractionService interactionService;
+    private final InteractionService service;
 
-    public InteractionController(InteractionService interactionService) {
-        this.interactionService = interactionService;
+    public InteractionController(InteractionService service) {
+        this.service = service;
     }
 
-    @PostMapping
-    public Interaction add(@RequestBody Interaction interaction) {
-        return interactionService.addInteraction(interaction);
+    @PostMapping("/check")
+    public InteractionCheckResult check(@RequestBody InteractionCheckRequest req) {
+        return service.checkInteractions(req.medicationIds);
     }
 
-    @GetMapping
-    public List<Interaction> getAll() {
-        return interactionService.getAllInteractions();
+    @GetMapping("/result/{id}")
+    public InteractionCheckResult get(@PathVariable Long id) {
+        return service.getResult(id);
     }
 }
