@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "interaction_results")
+@Table(name = "interaction_check_results")
 public class InteractionCheckResult {
 
     @Id
@@ -13,20 +13,25 @@ public class InteractionCheckResult {
 
     private String medications;
 
-    @Column(length = 2000)
+    @Column(length = 4000)
     private String interactions;
 
-    private LocalDateTime checkedAt = LocalDateTime.now();
+    private LocalDateTime checkedAt;
 
-    public InteractionCheckResult() {}
+    public InteractionCheckResult() {
+        this.checkedAt = LocalDateTime.now();
+    }
 
-    public InteractionCheckResult(String m, String i) {
-        this.medications = m;
-        this.interactions = i;
+    public InteractionCheckResult(String medications, String interactions) {
+        this.medications = medications;
+        this.interactions = interactions;
+        this.checkedAt = LocalDateTime.now();
     }
 
     public Long getId() { return id; }
     public String getMedications() { return medications; }
     public String getInteractions() { return interactions; }
     public LocalDateTime getCheckedAt() { return checkedAt; }
+
+    public void setId(Long id) { this.id = id; }
 }
