@@ -13,7 +13,7 @@ public class InteractionCheckResult {
 
     private String medications;
 
-    @Column(length = 4000)
+    @Lob
     private String interactions;
 
     private LocalDateTime checkedAt;
@@ -34,4 +34,10 @@ public class InteractionCheckResult {
     public LocalDateTime getCheckedAt() { return checkedAt; }
 
     public void setId(Long id) { this.id = id; }
+    public void setMedications(String medications) {
+        this.medications = medications;
+    }
+    public void setInteractions(String interactions) {
+        this.interactions = interactions;
+    }
 }

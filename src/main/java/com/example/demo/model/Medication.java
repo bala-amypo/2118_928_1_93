@@ -23,10 +23,7 @@ public class Medication {
     private Set<ActiveIngredient> ingredients = new HashSet<>();
 
     public Medication() {}
-
-    public Medication(String name) {
-        this.name = name;
-    }
+    public Medication(String name) { this.name = name; }
 
     public Long getId() { return id; }
     public String getName() { return name; }
@@ -34,5 +31,7 @@ public class Medication {
 
     public void setId(Long id) { this.id = id; }
     public void setName(String name) { this.name = name; }
-    public void setIngredients(Set<ActiveIngredient> ingredients) { this.ingredients = ingredients; }
+    public void setIngredients(Set<ActiveIngredient> ingredients) {
+        this.ingredients = ingredients;
+    }
 }
