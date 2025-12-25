@@ -31,16 +31,13 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setRole(request.getRole());
 
-        User user = new User(
-                request.getName(),
-                request.getEmail(),
-                request.getPassword(),
-                request.getRole()
-        );
-
-        User savedUser = userService.registerUser(user);
-        return ResponseEntity.ok(savedUser);
+        return ResponseEntity.ok(userService.registerUser(user));
     }
 
     @PostMapping("/login")
@@ -49,9 +46,10 @@ public class AuthController {
         User user = userService.findByEmail(request.getEmail());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid email or password");
+            return ResponseEntity.status(401).body("Invalid credentials");
         }
 
+        // ✅ FIX: pass userId (Long), not email
         String token = jwtUtil.generateToken(
                 user.getId(),
                 user.getEmail(),
@@ -60,7 +58,7 @@ public class AuthController {
 
         Map<String, Object> response = new HashMap<>();
         response.put("token", token);
-        response.put("id", user.getId());
+        response.put("userId", user.getId());
         response.put("email", user.getEmail());
         response.put("role", user.getRole());
 
