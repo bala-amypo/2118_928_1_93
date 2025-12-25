@@ -1,48 +1,34 @@
 package com.example.demo.model;
 
-
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-
 
 @Entity
-@Table(name = "interaction_check_results")
 public class InteractionCheckResult {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Long id;
+    private String message;
+    private String severity;
 
+    public Long getId() {
+        return id;
+    }
 
-@Column(nullable = false, length = 1000)
-private String medications;
+    public String getMessage() {
+        return message;
+    }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-@Column(nullable = false, length = 4000)
-private String interactions;
+    public String getSeverity() {
+        return severity;
+    }
 
-
-private LocalDateTime checkedAt;
-
-
-public InteractionCheckResult() {
-this.checkedAt = LocalDateTime.now();
-}
-
-
-public InteractionCheckResult(String medications, String interactions) {
-this.medications = medications;
-this.interactions = interactions;
-this.checkedAt = LocalDateTime.now();
-}
-
-
-@PrePersist
-public void onCreate() {
-this.checkedAt = LocalDateTime.now();
-}
-
-
-// getters and setters
+    public void setSeverity(String severity) {
+        this.severity = severity;
+    }
 }

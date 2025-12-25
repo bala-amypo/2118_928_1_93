@@ -1,6 +1,8 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.model.InteractionCheckResult;
 import com.example.demo.service.InteractionService;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,13 +11,22 @@ import java.util.List;
 public class InteractionServiceImpl implements InteractionService {
 
     @Override
-    public String checkInteractions(List<Long> medicationIds) {
-        // temporary stub logic
-        return "Interaction check completed";
+    public InteractionCheckResult checkInteractions(List<Long> medicationIds) {
+
+        InteractionCheckResult result = new InteractionCheckResult();
+        result.setMessage("No severe interactions found");
+        result.setSeverity("LOW");
+
+        return result; // ✅ NOT STRING
     }
 
     @Override
-    public String getResult(Long id) {
-        return "Result for interaction id: " + id;
+    public InteractionCheckResult getResult(Long id) {
+
+        InteractionCheckResult result = new InteractionCheckResult();
+        result.setMessage("Interaction result for ID " + id);
+        result.setSeverity("LOW");
+
+        return result; // ✅ NOT STRING
     }
 }
