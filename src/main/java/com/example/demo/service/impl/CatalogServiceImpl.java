@@ -1,33 +1,23 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.Drug;
-import com.example.demo.repository.DrugRepository;
-import com.example.demo.service.CatalogService;
+import com.example.demo.model.User;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
-public class CatalogServiceImpl implements CatalogService {
+public class UserServiceImpl implements UserService {
 
-    private final DrugRepository drugRepository;
+    private final UserRepository userRepository;
 
-    public CatalogServiceImpl(DrugRepository drugRepository) {
-        this.drugRepository = drugRepository;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Drug addDrug(Drug drug) {
-        return drugRepository.save(drug);
-    }
-
-    @Override
-    public List<Drug> getAllDrugs() {
-        return drugRepository.findAll();
-    }
-
-    @Override
-    public Drug getDrugById(Long id) {
-        return drugRepository.findById(id).orElse(null);
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
