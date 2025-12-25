@@ -12,8 +12,13 @@ import java.util.List;
 @Service
 public class CatalogServiceImpl implements CatalogService {
     
-    private final ActiveIngredientRepository ingredientRepository;
-    private final MedicationRepository medicationRepository;
+    private ActiveIngredientRepository ingredientRepository;
+    private MedicationRepository medicationRepository;
+    
+    public CatalogServiceImpl() {
+        this.ingredientRepository = null;
+        this.medicationRepository = null;
+    }
     
     public CatalogServiceImpl(ActiveIngredientRepository ingredientRepository, MedicationRepository medicationRepository) {
         this.ingredientRepository = ingredientRepository;

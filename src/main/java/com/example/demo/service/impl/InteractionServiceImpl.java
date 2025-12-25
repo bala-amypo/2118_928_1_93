@@ -17,9 +17,15 @@ import java.util.stream.Collectors;
 @Service
 public class InteractionServiceImpl implements InteractionService {
     
-    private final MedicationRepository medicationRepository;
-    private final InteractionRuleRepository ruleRepository;
-    private final InteractionCheckResultRepository resultRepository;
+    private MedicationRepository medicationRepository;
+    private InteractionRuleRepository ruleRepository;
+    private InteractionCheckResultRepository resultRepository;
+    
+    public InteractionServiceImpl() {
+        this.medicationRepository = null;
+        this.ruleRepository = null;
+        this.resultRepository = null;
+    }
     
     public InteractionServiceImpl(MedicationRepository medicationRepository, 
                                 InteractionRuleRepository ruleRepository,

@@ -10,7 +10,11 @@ import java.util.List;
 @Service
 public class RuleServiceImpl implements RuleService {
     
-    private final InteractionRuleRepository ruleRepository;
+    private InteractionRuleRepository ruleRepository;
+    
+    public RuleServiceImpl() {
+        this.ruleRepository = null;
+    }
     
     public RuleServiceImpl(InteractionRuleRepository ruleRepository) {
         this.ruleRepository = ruleRepository;
