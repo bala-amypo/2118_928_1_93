@@ -18,7 +18,9 @@ public class User {
     
     private String role;
     
-    public User() {}
+    public User() {
+        this.role = "USER"; // Default role
+    }
     
     public User(String name, String email, String password) {
         this.name = name;
