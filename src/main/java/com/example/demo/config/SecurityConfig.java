@@ -1,10 +1,12 @@
-package com.example.demo.security;
+package com.example.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
@@ -14,33 +16,24 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.disable())
-
-            // VERY IMPORTANT
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-
             .authorizeHttpRequests(auth -> auth
-                // 🔓 Swagger allow
                 .requestMatchers(
+                        "/auth/**",
                         "/swagger-ui/**",
-                        "/v3/api-docs/**",
-                        "/swagger-ui.html"
+                        "/v3/api-docs/**"
                 ).permitAll()
-
-                // 🔓 Auth allow
-                .requestMatchers("/auth/**").permitAll()
-
-                // 🔐 Everything else secured
                 .anyRequest().authenticated()
             )
-
-            // ❌ Disable default login form
-            .formLogin(form -> form.disable())
-
-            // ❌ Disable basic auth popup
-            .httpBasic(basic -> basic.disable());
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            );
 
         return http.build();
+    }
+
+    // 🔥 THIS FIXES YOUR ERROR (NO NEW FILE)
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
