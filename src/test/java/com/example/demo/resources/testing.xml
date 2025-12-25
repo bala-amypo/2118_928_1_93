@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="DrugInteractionCheckerTestSuite">
+    <test name="DrugInteractionCheckerTest">
+        <classes>
+            <class name="com.example.demo.DrugInteractionCheckerTest"/>
+        </classes>
+    </test>
+</suite>
