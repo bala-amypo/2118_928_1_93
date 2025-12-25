@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.InteractionRule;
 import com.example.demo.service.RuleService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,16 +11,18 @@ import java.util.List;
 @RequestMapping("/rules")
 public class RuleController {
 
-    @Autowired
-    private RuleService ruleService;
+    private final RuleService ruleService;
 
-    @PostMapping("/add")
-    public void addRule(@RequestBody InteractionRule rule) {
-        // Fixed: call void method, no assignment
-        ruleService.addRule(rule);
+    public RuleController(RuleService ruleService) {
+        this.ruleService = ruleService;
     }
 
-    @GetMapping("/all")
+    @PostMapping
+    public InteractionRule addRule(@RequestBody InteractionRule rule) {
+        return ruleService.addRule(rule);
+    }
+
+    @GetMapping
     public List<InteractionRule> getAllRules() {
         return ruleService.getAllRules();
     }

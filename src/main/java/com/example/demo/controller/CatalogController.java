@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.model.ActiveIngredient;
 import com.example.demo.model.Medication;
 import com.example.demo.service.CatalogService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,18 +12,20 @@ import java.util.List;
 @RequestMapping("/catalog")
 public class CatalogController {
 
-    @Autowired
-    private CatalogService catalogService;
+    private final CatalogService catalogService;
+
+    public CatalogController(CatalogService catalogService) {
+        this.catalogService = catalogService;
+    }
 
     @PostMapping("/ingredient")
-    public void addIngredient(@RequestBody ActiveIngredient ingredient) {
-        // Fixed: just call the void method, no assignment
-        catalogService.addIngredient(ingredient);
+    public ActiveIngredient addIngredient(@RequestBody ActiveIngredient ingredient) {
+        return catalogService.addIngredient(ingredient);
     }
 
     @PostMapping("/medication")
-    public void addMedication(@RequestBody Medication medication) {
-        catalogService.addMedication(medication);
+    public Medication addMedication(@RequestBody Medication medication) {
+        return catalogService.addMedication(medication);
     }
 
     @GetMapping("/medications")
