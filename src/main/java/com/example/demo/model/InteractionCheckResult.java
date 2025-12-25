@@ -3,8 +3,6 @@ package com.example.demo.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @Setter
@@ -16,15 +14,11 @@ public class InteractionCheckResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String interactions;
+    private String message;
     private String severity;
 
-    private LocalDateTime checkedAt = LocalDateTime.now();
-
-    // ✅ REQUIRED BY TEST
-    public InteractionCheckResult(String interactions, String severity) {
-        this.interactions = interactions;
+    public InteractionCheckResult(String message, String severity) {
+        this.message = message;
         this.severity = severity;
-        this.checkedAt = LocalDateTime.now();
     }
 }

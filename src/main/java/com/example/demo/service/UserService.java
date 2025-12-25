@@ -4,6 +4,7 @@ import com.example.demo.model.User;
 
 public interface UserService {
 
-    // ✅ REQUIRED BY TEST
-    User register(User user);
+    User registerUser(User user);
+
+    User findByEmail(String email);
 }
