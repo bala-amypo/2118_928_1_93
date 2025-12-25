@@ -1,14 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.InteractionCheckResult;
+import com.example.demo.model.Interaction;
 import com.example.demo.service.InteractionService;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/interact")
+@RequestMapping("/interactions")
 public class InteractionController {
 
     private final InteractionService interactionService;
@@ -17,15 +16,13 @@ public class InteractionController {
         this.interactionService = interactionService;
     }
 
-    @PostMapping("/check")
-    public InteractionCheckResult check(@RequestBody List<Long> medicationIds) {
-        // ✅ MUST return InteractionCheckResult
-        return interactionService.checkInteractions(medicationIds);
+    @PostMapping
+    public Interaction add(@RequestBody Interaction interaction) {
+        return interactionService.addInteraction(interaction);
     }
 
-    @GetMapping("/result/{id}")
-    public InteractionCheckResult getResult(@PathVariable Long id) {
-        // ✅ MUST return InteractionCheckResult
-        return interactionService.getResult(id);
+    @GetMapping
+    public List<Interaction> getAll() {
+        return interactionService.getAllInteractions();
     }
 }

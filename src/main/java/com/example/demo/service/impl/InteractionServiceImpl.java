@@ -1,19 +1,28 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.InteractionCheckResult;
+import com.example.demo.model.Interaction;
+import com.example.demo.repository.InteractionRepository;
+import com.example.demo.service.InteractionService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-public class InteractionServiceImpl {
+public class InteractionServiceImpl implements InteractionService {
 
-    public InteractionCheckResult check(String drug1, String drug2) {
+    private final InteractionRepository interactionRepository;
 
-        InteractionCheckResult result =
-                new InteractionCheckResult();
+    public InteractionServiceImpl(InteractionRepository interactionRepository) {
+        this.interactionRepository = interactionRepository;
+    }
 
-        result.setMessage("No interaction found");
-        result.setSeverity("LOW");
+    @Override
+    public Interaction addInteraction(Interaction interaction) {
+        return interactionRepository.save(interaction);
+    }
 
-        return result;
+    @Override
+    public List<Interaction> getAllInteractions() {
+        return interactionRepository.findAll();
     }
 }
