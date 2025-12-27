@@ -10,13 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
     
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    
-    public UserServiceImpl() {
-        this.userRepository = null;
-        this.passwordEncoder = null;
-    }
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -28,21 +23,13 @@ public class UserServiceImpl implements UserService {
         if (user.getRole() == null) {
             user.setRole("USER");
         }
-        if (passwordEncoder != null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-        if (userRepository != null) {
-            return userRepository.save(user);
-        }
-        return user;
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
     
     @Override
     public User findByEmail(String email) {
-        if (userRepository != null) {
-            return userRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-        }
-        throw new RuntimeException("User not found");
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
     }
 }
