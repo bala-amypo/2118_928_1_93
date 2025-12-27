@@ -15,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*")
 @Tag(name = "Auth", description = "Authentication endpoints")
 public class AuthController {
     
@@ -30,12 +31,16 @@ public class AuthController {
     
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
-        User user = new User(request.getName(), request.getEmail(), request.getPassword());
-        if (request.getRole() != null) {
-            user.setRole(request.getRole());
+        try {
+            User user = new User(request.getName(), request.getEmail(), request.getPassword());
+            if (request.getRole() != null) {
+                user.setRole(request.getRole());
+            }
+            User savedUser = userService.register(user);
+            return ResponseEntity.ok(savedUser);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
-        User savedUser = userService.register(user);
-        return ResponseEntity.ok(savedUser);
     }
     
     @PostMapping("/login")
