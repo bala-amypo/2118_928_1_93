@@ -30,15 +30,6 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
-    // ✅ TEST ENDPOINT
-    @GetMapping("/test")
-    public ResponseEntity<Map<String, Object>> test() {
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Auth controller is working");
-        response.put("timestamp", System.currentTimeMillis());
-        return ResponseEntity.ok(response);
-    }
-
     // ✅ REGISTER
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
@@ -59,42 +50,34 @@ public class AuthController {
     public ResponseEntity<Map<String, Object>> login(
             @RequestBody LoginRequest request) {
 
-        try {
-            User user = userService.findByEmail(request.getEmail());
+        User user = userService.findByEmail(request.getEmail());
 
-            if (user == null) {
-                Map<String, Object> error = new HashMap<>();
-                error.put("message", "User not found");
-                return ResponseEntity.badRequest().body(error);
-            }
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword())) {
 
-            if (!passwordEncoder.matches(
-                    request.getPassword(),
-                    user.getPassword())) {
-
-                Map<String, Object> error = new HashMap<>();
-                error.put("message", "Invalid credentials");
-                return ResponseEntity.badRequest().body(error);
-            }
-
-            // Simplified response without JWT for now
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Login successful");
-
-            Map<String, Object> userMap = new HashMap<>();
-            userMap.put("id", user.getId());
-            userMap.put("name", user.getName());
-            userMap.put("email", user.getEmail());
-            userMap.put("role", user.getRole());
-
-            response.put("user", userMap);
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
             Map<String, Object> error = new HashMap<>();
-            error.put("message", "Login failed: " + e.getMessage());
-            error.put("error", e.getClass().getSimpleName());
-            return ResponseEntity.status(500).body(error);
+            error.put("message", "Invalid credentials");
+            return ResponseEntity.badRequest().body(error);
         }
+
+        String token = jwtUtil.generateToken(
+                user.getEmail(),
+                user.getId(),
+                user.getRole()
+        );
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("id", user.getId());
+        userMap.put("name", user.getName());
+        userMap.put("email", user.getEmail());
+        userMap.put("role", user.getRole());
+
+        response.put("user", userMap);
+
+        return ResponseEntity.ok(response);
     }
 }
