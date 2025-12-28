@@ -36,12 +36,9 @@ public class AuthController {
         User user = new User(
                 request.getName(),
                 request.getEmail(),
-                request.getPassword()
+                request.getPassword(),
+                request.getRole()
         );
-
-        if (request.getRole() != null) {
-            user.setRole(request.getRole());
-        }
 
         User savedUser = userService.register(user);
         return ResponseEntity.ok(savedUser);
