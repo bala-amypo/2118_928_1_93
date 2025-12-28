@@ -1,29 +1,17 @@
 package com.example.demo.controller;
 
-/* ===== SPRING IMPORTS ===== */
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.http.ResponseEntity;
-
-/* ===== SECURITY ===== */
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-/* ===== SWAGGER ===== */
-import io.swagger.v3.oas.annotations.tags.Tag;
-
-/* ===== JAVA ===== */
-import java.util.Map;
-import java.util.HashMap;
-
-/* ===== PROJECT IMPORTS ===== */
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import com.example.demo.util.JwtUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -48,7 +36,7 @@ public class AuthController {
         User user = new User(
                 request.getName(),
                 request.getEmail(),
-                request.getPassword(),
+                passwordEncoder.encode(request.getPassword()),
                 request.getRole()
         );
 
@@ -57,11 +45,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Map<String, Object>> login(
+            @RequestBody LoginRequest request) {
 
         User user = userService.findByEmail(request.getEmail());
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword())) {
             return ResponseEntity.badRequest().build();
         }
 
