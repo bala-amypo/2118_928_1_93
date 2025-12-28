@@ -12,13 +12,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // 🔴 DEFAULT CONSTRUCTOR – FOR TESTCASES (Mockito)
-    public UserServiceImpl() {
-        this.userRepository = null;
-        this.passwordEncoder = null;
-    }
-
-    // 🟢 SPRING WILL USE THIS CONSTRUCTOR AT RUNTIME
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -32,26 +25,14 @@ public class UserServiceImpl implements UserService {
             user.setRole("USER");
         }
 
-        // 🔐 encode password
-        if (passwordEncoder != null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // 💾 SAVE TO DB (Swagger runtime)
-        if (userRepository != null) {
-            return userRepository.save(user);
-        }
-
-        // 🧪 fallback only for testcases
-        return user;
+        return userRepository.save(user); // ✅ DB save
     }
 
     @Override
     public User findByEmail(String email) {
-        if (userRepository != null) {
-            return userRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-        }
-        throw new RuntimeException("User not found");
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }
