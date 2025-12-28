@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*")
+@CrossOrigin
 public class AuthController {
 
     private final UserService userService;
@@ -30,6 +30,7 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
+    // ✅ REGISTER (existing service method use pannudhu)
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
 
@@ -39,34 +40,29 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(request.getRole());
 
-        // 🔥 FIX 1
-        User savedUser = userService.registerUser(user);
+        User savedUser = userService.register(user); // 🔴 FIX HERE
         return ResponseEntity.ok(savedUser);
     }
 
+    // ✅ LOGIN (JwtUtil signature match pannudhu)
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request) {
 
         User user = userService.findByEmail(request.getEmail());
-        if (user == null) {
-            return ResponseEntity.status(401).body("Invalid credentials");
+
+        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(401).build();
         }
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(401).body("Invalid credentials");
-        }
-
-        // 🔥 FIX 2
         String token = jwtUtil.generateToken(
                 user.getEmail(),
-                null,
+                user.getId(),
                 user.getRole()
         );
 
         Map<String, Object> response = new HashMap<>();
         response.put("token", token);
-        response.put("email", user.getEmail());
-        response.put("role", user.getRole());
+        response.put("user", user);
 
         return ResponseEntity.ok(response);
     }
