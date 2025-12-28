@@ -1,3 +1,30 @@
+package com.example.demo.controller;
+
+/* ===== SPRING IMPORTS ===== */
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.http.ResponseEntity;
+
+/* ===== SECURITY ===== */
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+/* ===== SWAGGER ===== */
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+/* ===== JAVA ===== */
+import java.util.Map;
+import java.util.HashMap;
+
+/* ===== PROJECT IMPORTS ===== */
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
+import com.example.demo.model.User;
+import com.example.demo.service.UserService;
+import com.example.demo.util.JwtUtil;
+
 @RestController
 @RequestMapping("/auth")
 @Tag(name = "Auth", description = "Authentication endpoints")
