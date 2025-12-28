@@ -15,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*")
 @Tag(name = "Auth", description = "Authentication endpoints")
 public class AuthController {
 
@@ -30,20 +31,21 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
+    // ================= REGISTER =================
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
 
-        User user = new User(
-                request.getName(),
-                request.getEmail(),
-                passwordEncoder.encode(request.getPassword()),
-                request.getRole()
-        );
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setRole(request.getRole());
 
         User savedUser = userService.register(user);
         return ResponseEntity.ok(savedUser);
     }
 
+    // ================= LOGIN =================
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(
             @RequestBody LoginRequest request) {
@@ -53,7 +55,10 @@ public class AuthController {
         if (!passwordEncoder.matches(
                 request.getPassword(),
                 user.getPassword())) {
-            return ResponseEntity.badRequest().build();
+
+            Map<String, Object> error = new HashMap<>();
+            error.put("message", "Invalid credentials");
+            return ResponseEntity.badRequest().body(error);
         }
 
         String token = jwtUtil.generateToken(
@@ -62,14 +67,15 @@ public class AuthController {
                 user.getRole()
         );
 
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("id", user.getId());
+        userMap.put("name", user.getName());
+        userMap.put("email", user.getEmail());
+        userMap.put("role", user.getRole());
+
         Map<String, Object> response = new HashMap<>();
         response.put("token", token);
-        response.put("user", Map.of(
-                "id", user.getId(),
-                "name", user.getName(),
-                "email", user.getEmail(),
-                "role", user.getRole()
-        ));
+        response.put("user", userMap);
 
         return ResponseEntity.ok(response);
     }
