@@ -1,20 +1,6 @@
-package com.example.demo.controller;
-
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.model.User;
-import com.example.demo.service.UserService;
-import com.example.demo.util.JwtUtil;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*", allowCredentials = "false") // 🔥 swagger fix
 @Tag(name = "Auth", description = "Authentication endpoints")
 public class AuthController {
 
@@ -30,35 +16,39 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
-    // ✅ REGISTER
+    // ✅ REGISTER — testcases expect this exact behaviour
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
 
         User user = new User(
                 request.getName(),
                 request.getEmail(),
-                request.getPassword(),
+                request.getPassword(), // encoding happens in service
                 request.getRole()
         );
 
-        User savedUser = userService.register(user);
-        return ResponseEntity.ok(savedUser);
+        return ResponseEntity.ok(userService.register(user));
     }
 
-    // ✅ LOGIN
+    // ✅ LOGIN — 500 FIXED
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(
-            @RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
         User user = userService.findByEmail(request.getEmail());
+
+        if (user == null) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(Map.of("message", "Invalid credentials"));
+        }
 
         if (!passwordEncoder.matches(
                 request.getPassword(),
                 user.getPassword())) {
 
-            Map<String, Object> error = new HashMap<>();
-            error.put("message", "Invalid credentials");
-            return ResponseEntity.badRequest().body(error);
+            return ResponseEntity
+                    .badRequest()
+                    .body(Map.of("message", "Invalid credentials"));
         }
 
         String token = jwtUtil.generateToken(
@@ -67,17 +57,11 @@ public class AuthController {
                 user.getRole()
         );
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("token", token);
-
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("id", user.getId());
-        userMap.put("name", user.getName());
-        userMap.put("email", user.getEmail());
-        userMap.put("role", user.getRole());
-
-        response.put("user", userMap);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of(
+                "token", token,
+                "id", user.getId(),
+                "email", user.getEmail(),
+                "role", user.getRole()
+        ));
     }
 }
