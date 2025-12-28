@@ -30,24 +30,20 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
-    // ================= REGISTER =================
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
 
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-
-        // 🔥 IMPORTANT FIX (password encrypt)
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-
         user.setRole(request.getRole());
 
-        User savedUser = userService.save(user);
+        // 🔥 FIX 1
+        User savedUser = userService.registerUser(user);
         return ResponseEntity.ok(savedUser);
     }
 
-    // ================= LOGIN =================
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
@@ -56,12 +52,16 @@ public class AuthController {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
 
-        // 🔥 IMPORTANT FIX (matches)
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
 
-        String token = jwtUtil.generateToken(user.getEmail());
+        // 🔥 FIX 2
+        String token = jwtUtil.generateToken(
+                user.getEmail(),
+                null,
+                user.getRole()
+        );
 
         Map<String, Object> response = new HashMap<>();
         response.put("token", token);
