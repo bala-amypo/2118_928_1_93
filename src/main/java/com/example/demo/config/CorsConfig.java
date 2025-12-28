@@ -10,9 +10,18 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("https://*.amypo.ai", "http://localhost:*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedOriginPatterns(
+                        "https://*.amypo.ai",
+                        "http://localhost:*"
+                )
+                .allowedMethods(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE",
+                        "OPTIONS"
+                )
                 .allowedHeaders("*")
-                .allowCredentials(false);
+                .allowCredentials(false); // ✅ correct
     }
 }
