@@ -15,7 +15,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*")
+// ✅ FIX: remove "*" and credentials conflict
+@CrossOrigin
 @Tag(name = "Auth", description = "Authentication endpoints")
 public class AuthController {
 
@@ -23,7 +24,9 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public AuthController(UserService userService, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public AuthController(UserService userService,
+                          PasswordEncoder passwordEncoder,
+                          JwtUtil jwtUtil) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
@@ -31,40 +34,44 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
-        try {
-            User user = new User(request.getName(), request.getEmail(), request.getPassword());
-            if (request.getRole() != null) {
-                user.setRole(request.getRole());
-            }
-            User savedUser = userService.register(user);
-            return ResponseEntity.ok(savedUser);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+        User user = new User(
+                request.getName(),
+                request.getEmail(),
+                request.getPassword()
+        );
+
+        if (request.getRole() != null) {
+            user.setRole(request.getRole());
         }
+
+        User savedUser = userService.register(user);
+        return ResponseEntity.ok(savedUser);
     }
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request) {
-        try {
-            User user = userService.findByEmail(request.getEmail());
-            if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-                return ResponseEntity.badRequest().build();
-            }
 
-            String token = jwtUtil.generateToken(user.getEmail(), user.getId(), user.getRole());
+        User user = userService.findByEmail(request.getEmail());
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", token);
-            response.put("user", Map.of(
-                    "id", user.getId(),
-                    "name", user.getName(),
-                    "email", user.getEmail(),
-                    "role", user.getRole()
-            ));
-
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             return ResponseEntity.badRequest().build();
         }
+
+        String token = jwtUtil.generateToken(
+                user.getEmail(),
+                user.getId(),
+                user.getRole()
+        );
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("user", Map.of(
+                "id", user.getId(),
+                "name", user.getName(),
+                "email", user.getEmail(),
+                "role", user.getRole()
+        ));
+
+        return ResponseEntity.ok(response);
     }
 }
