@@ -1,33 +1,21 @@
 package com.example.demo.controller;
 
-// 🔹 SPRING IMPORTS
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.http.ResponseEntity;
-
-// 🔹 SECURITY
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-// 🔹 SWAGGER
-import io.swagger.v3.oas.annotations.tags.Tag;
-
-// 🔹 PROJECT IMPORTS
+import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
-import com.example.demo.model.User;
 
-// 🔹 JAVA
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*", allowCredentials = "false")
-@Tag(name = "Auth", description = "Authentication endpoints")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final UserService userService;
@@ -42,45 +30,44 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
-    // ✅ REGISTER — testcases safe
+    // ================= REGISTER =================
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
 
-        User user = new User(
-                request.getName(),
-                request.getEmail(),
-                request.getPassword(),
-                request.getRole()
-        );
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
 
-        return ResponseEntity.ok(userService.register(user));
+        // 🔥 IMPORTANT FIX (password encrypt)
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        user.setRole(request.getRole());
+
+        User savedUser = userService.save(user);
+        return ResponseEntity.ok(savedUser);
     }
 
-    // ✅ LOGIN — 500 fixed
+    // ================= LOGIN =================
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
         User user = userService.findByEmail(request.getEmail());
-
-        if (user == null ||
-            !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-
-            return ResponseEntity
-                    .badRequest()
-                    .body(Map.of("message", "Invalid credentials"));
+        if (user == null) {
+            return ResponseEntity.status(401).body("Invalid credentials");
         }
 
-        String token = jwtUtil.generateToken(
-                user.getEmail(),
-                user.getId(),
-                user.getRole()
-        );
+        // 🔥 IMPORTANT FIX (matches)
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(401).body("Invalid credentials");
+        }
 
-        return ResponseEntity.ok(Map.of(
-                "token", token,
-                "id", user.getId(),
-                "email", user.getEmail(),
-                "role", user.getRole()
-        ));
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("email", user.getEmail());
+        response.put("role", user.getRole());
+
+        return ResponseEntity.ok(response);
     }
 }
