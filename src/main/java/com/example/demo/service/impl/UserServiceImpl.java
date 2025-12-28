@@ -12,7 +12,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // ✅ Correct constructor injection
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -24,11 +23,7 @@ public class UserServiceImpl implements UserService {
         if (user.getRole() == null) {
             user.setRole("USER");
         }
-
-        // ✅ encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        // ✅ DB save → ID generated
         return userRepository.save(user);
     }
 
