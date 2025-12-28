@@ -10,7 +10,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("https://*.amypo.ai", "http://localhost:*")
+                .allowedOrigins("https://9132.408procr.amypo.ai", "http://localhost:3000", "http://localhost:8080", "http://localhost:9001")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
