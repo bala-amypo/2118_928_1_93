@@ -30,6 +30,15 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
+    // ✅ TEST ENDPOINT
+    @GetMapping("/test")
+    public ResponseEntity<Map<String, Object>> test() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Auth controller is working");
+        response.put("timestamp", System.currentTimeMillis());
+        return ResponseEntity.ok(response);
+    }
+
     // ✅ REGISTER
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
