@@ -1,11 +1,11 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import com.example.demo.util.JwtUtil;
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin
+@Tag(name = "Auth", description = "Authentication endpoints")
 public class AuthController {
 
     private final UserService userService;
@@ -30,40 +30,62 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
-    // ✅ REGISTER (existing service method use pannudhu)
+    // ✅ REGISTER
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
 
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole());
+        User user = new User(
+                request.getName(),
+                request.getEmail(),
+                request.getPassword(),
+                request.getRole()
+        );
 
-        User savedUser = userService.register(user); // 🔴 FIX HERE
+        User savedUser = userService.register(user);
         return ResponseEntity.ok(savedUser);
     }
 
-    // ✅ LOGIN (JwtUtil signature match pannudhu)
+    // ✅ LOGIN
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Map<String, Object>> login(
+            @RequestBody LoginRequest request) {
 
-        User user = userService.findByEmail(request.getEmail());
+        try {
+            User user = userService.findByEmail(request.getEmail());
 
-        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(401).build();
+            if (user == null) {
+                Map<String, Object> error = new HashMap<>();
+                error.put("message", "User not found");
+                return ResponseEntity.badRequest().body(error);
+            }
+
+            if (!passwordEncoder.matches(
+                    request.getPassword(),
+                    user.getPassword())) {
+
+                Map<String, Object> error = new HashMap<>();
+                error.put("message", "Invalid credentials");
+                return ResponseEntity.badRequest().body(error);
+            }
+
+            // Simplified response without JWT for now
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Login successful");
+
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("id", user.getId());
+            userMap.put("name", user.getName());
+            userMap.put("email", user.getEmail());
+            userMap.put("role", user.getRole());
+
+            response.put("user", userMap);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("message", "Login failed: " + e.getMessage());
+            error.put("error", e.getClass().getSimpleName());
+            return ResponseEntity.status(500).body(error);
         }
-
-        String token = jwtUtil.generateToken(
-                user.getEmail(),
-                user.getId(),
-                user.getRole()
-        );
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("token", token);
-        response.put("user", user);
-
-        return ResponseEntity.ok(response);
     }
 }
