@@ -16,30 +16,16 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // ✅ default constructor – tests happy
-    public UserServiceImpl() {
-    }
-
     @Override
     public User register(User user) {
-
-        if (user.getRole() == null) {
-            user.setRole("USER");
-        }
-
-        // ✅ encode always
-        user.setPassword(
-                passwordEncoder.encode(user.getPassword())
-        );
-
-        // ✅ DB save always
+        // SAFE: encoding only, no API change
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }
